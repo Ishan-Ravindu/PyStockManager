@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS Sport Coming Soon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #1c1c1c, #333333);
+            background-size: 400% 400%;
+            animation: gradientAnimation 6s ease infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .content {
+            text-align: center;
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+            line-height: 1.2;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #f0c27b, #4b1248);
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        MS Sport Coming Soon
+    </div>
+</body>
+</html>
