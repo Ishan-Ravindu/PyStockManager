@@ -128,3 +128,41 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+JAZZMIN_SETTINGS = {
+    # Title on the login screen
+    "site_title": "MS Sports",
+    
+    # Title on the brand (top left)
+    "site_header": "MS Sports",
+    
+    # Title on the browser tab
+    "site_brand": "MS Sports",
+    
+    # CSS classes that are applied to the logo above
+    "site_logo_classes": "img-circle",
+    
+    # Welcome text on the login screen
+    "welcome_sign": "Welcome to the MS Sports System",
+    
+    # Copyright on the footer
+    "copyright": "MS Sports",  
+    
+    # Custom icons for side menu apps/models
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "inventory.shop": "fas fa-store",
+        "inventory.product": "fas fa-box",
+        "inventory.stock": "fas fa-warehouse",
+        "inventory.supplier": "fas fa-truck",
+        "inventory.customer": "fas fa-users",
+        "inventory.purchaseinvoice": "fas fa-file-invoice-dollar",
+        "inventory.salesinvoice": "fas fa-receipt",
+        "inventory.stocktransfer": "fas fa-exchange-alt",
+    },
+    # Icons that are used when one is not manually specified
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+}
