@@ -18,11 +18,12 @@ class Supplier(models.Model):
 class Customer(models.Model):
     name = models.CharField(max_length=255)
     contact_info = models.TextField()
+    credit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     credit_limit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     credit_period = models.IntegerField(default=0)  # Days allowed for credit payments
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - Credit: {self.credit}/{self.credit_limit} ({self.credit_period} days)"
 
 class Product(models.Model):
     name = models.CharField(max_length=255)

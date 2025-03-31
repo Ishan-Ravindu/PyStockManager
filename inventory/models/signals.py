@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from .inventory import Stock
 from .purchases import PurchaseInvoiceItem
 from .transfers import StockTransferItem
-from .sales import SalesInvoiceItem
+from .sales import SalesInvoice, SalesInvoiceItem
 
 @receiver(post_save, sender=PurchaseInvoiceItem)
 def update_stock_and_price_after_purchase(sender, instance, **kwargs):
@@ -42,6 +42,14 @@ def update_stock_after_sale(sender, instance, **kwargs):
         product=instance.product
     )
     stock.update_stock(-instance.quantity)
+
+@receiver(post_save, sender=SalesInvoice)
+def update_customer_credit_after_sale(sender, instance, created, **kwargs):
+    """Update customer's credit balance after a sale """
+    customer = instance.customer
+    from decimal import Decimal
+    customer.credit += Decimal(str(instance.total_amount))
+    customer.save()
 
 @receiver(post_save, sender=SalesInvoiceItem)
 @receiver(post_delete, sender=SalesInvoiceItem)
