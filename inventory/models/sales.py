@@ -9,7 +9,7 @@ class SalesInvoice(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.shop.code}#{self.id}"
+        return f"{self.shop.code}#{self.id} - ({self.paid_amount}/{self.total_amount})"
 
     def update_total_amount(self):
         """Calculate and update total amount from sales invoice items."""
