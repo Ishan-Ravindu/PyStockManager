@@ -41,9 +41,19 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+
 @admin.register(Receipt)
 class ReceiptAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sales_invoice', 'amount', 'payment_method', 'received_at',)
+    list_display = ('id', 'sales_invoice', 'amount', 'payment_method', 'received_at', 'view_receipt_pdf')
+    list_filter = ('payment_method', 'received_at')
+    search_fields = ('sales_invoice__customer__name',)
+    
+    def view_receipt_pdf(self, obj):
+        if obj.id:
+            url = reverse('generate_receipt_pdf', args=[obj.id])
+            return format_html('<a class="button" href="{}" target="_blank"><i class="fa fa-file-pdf"></i> View PDF</a>', url)
+        return "-"
+    view_receipt_pdf.short_description = 'Receipt PDF'
     
     # when click Add Receipt need to pre loard invoice in the receipt form
     def get_form(self, request, obj=None, **kwargs):
@@ -62,3 +72,10 @@ class ReceiptAdmin(admin.ModelAdmin):
         return False 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    class Media:
+        css = {
+            'all': [
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+            ],
+        }

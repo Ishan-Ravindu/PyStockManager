@@ -1,0 +1,154 @@
+<!-- templates/sales/invoice_pdf.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ invoice.id }}</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #333333;
+        }
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            line-height: 24px;
+        }
+        .header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header .company {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .header-info {
+            margin-bottom: 20px;
+        }
+        .header-info div {
+            margin-bottom: 5px;
+        }
+        .customer-info, .invoice-info {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .amount-summary {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .amount-row {
+            margin-top: 5px;
+        }
+        .total-amount {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <div class="header">
+            <div class="company">{{ company_name }}</div>
+            <div class="header-info">
+                <div>{{ company_address }}</div>
+                <div>Phone: {{ company_phone }}</div>
+                <div>Email: {{ company_email }}</div>
+            </div>
+        </div>
+
+        <div class="invoice-info">
+            <div class="section-title">INVOICE</div>
+            <div>Invoice #: {{ invoice.id }}</div>
+            <div>Invoice Date: {{ invoice.created_at|date:"F d, Y" }}</div>
+            <div>Due Date: {{ invoice.due_date|date:"F d, Y" }}</div>
+        </div>
+
+        <div class="customer-info">
+            <div class="section-title">BILL TO</div>
+            <div>{{ invoice.customer.name }}</div>
+            <div>{{ invoice.customer.mobile_number }}</div>
+            {% if invoice.customer.address %}
+            <div>{{ invoice.customer.address }}</div>
+            {% endif %}
+            {% if invoice.customer.email %}
+            <div>{{ invoice.customer.email }}</div>
+            {% endif %}
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="amount-summary">
+            <div class="amount-row">
+                <span>Total Amount:</span>
+                <span class="total-amount">{{ invoice.total_amount }}</span>
+            </div>
+            <div class="amount-row">
+                <span>Paid Amount:</span>
+                <span>{{ invoice.paid_amount }}</span>
+            </div>
+            <div class="amount-row">
+                <span>Due Amount:</span>
+                <span>{{ invoice.get_due_amount }}</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for your business!</p>
+        </div>
+    </div>
+</body>
+</html>

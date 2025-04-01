@@ -1,0 +1,355 @@
+<!-- templates/sales/receipt_pdf.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Receipt #{{ receipt.id }}</title>
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 0.8cm;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 9pt;
+            color: #333333;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+        .receipt-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            border-bottom: 1px solid #2c3e50;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: table;
+            width: 100%;
+        }
+        .header-left {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+        .header-right {
+            display: table-cell;
+            width: 50%;
+            text-align: right;
+            vertical-align: top;
+        }
+        .company-logo {
+            font-size: 20pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        .company-details {
+            font-size: 8pt;
+            color: #555;
+            line-height: 1.2;
+        }
+        .document-title {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        .document-number {
+            font-size: 9pt;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        .two-column {
+            display: table;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .column {
+            display: table-cell;
+            width: 48%;
+            vertical-align: top;
+        }
+        .column-spacer {
+            display: table-cell;
+            width: 4%;
+        }
+        .section {
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid #eee;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        .info-table th {
+            text-align: left;
+            font-weight: bold;
+            padding: 3px;
+            color: #555;
+            font-size: 8pt;
+            width: 40%;
+        }
+        .info-table td {
+            text-align: left;
+            padding: 3px;
+            color: #333;
+            font-size: 9pt;
+        }
+        .amount-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            text-align: center;
+            margin: 12px 0;
+        }
+        .amount-title {
+            font-size: 10pt;
+            color: #555;
+            margin-bottom: 3px;
+        }
+        .amount-value {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .summary-table th {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 4px;
+            text-align: left;
+            font-size: 8pt;
+            color: #555;
+        }
+        .summary-table td {
+            border-bottom: 1px solid #eee;
+            padding: 4px;
+            font-size: 9pt;
+        }
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+        .summary-table .text-right {
+            text-align: right;
+        }
+        .footer {
+            margin-top: 15px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+            font-size: 8pt;
+            color: #777;
+            text-align: center;
+        }
+        .payment-method {
+            display: inline-block;
+            background-color: #e9ecef;
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+        .status-paid {
+            display: inline-block;
+            color: white;
+            background-color: #28a745;
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-size: 8pt;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .signatures {
+            margin-top: 20px;
+            display: table;
+            width: 100%;
+        }
+        .signature {
+            display: table-cell;
+            width: 50%;
+            padding-right: 10px;
+        }
+        .signature-line {
+            border-top: 1px solid #ccc;
+            width: 90%;
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+        .signature-title {
+            font-size: 8pt;
+            color: #555;
+        }
+        .compact-margin {
+            margin: 5px 0;
+        }
+        .receipt-note {
+            font-style: italic;
+            font-size: 8pt;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="header-left">
+                <div class="company-logo">{{ company_name }}</div>
+                <div class="company-details">
+                    {{ company_address }} • Tel: {{ company_phone }}<br>
+                    Email: {{ company_email }}{% if company_website %} • Website: {{ company_website }}{% endif %}
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="document-title">RECEIPT</div>
+                <div class="document-number"># {{ receipt.id }}</div>
+                <div class="status-paid">PAID</div>
+            </div>
+        </div>
+
+        <div class="two-column">
+            <!-- Left Column -->
+            <div class="column">
+                <!-- Receipt Details Section -->
+                <div class="section">
+                    <div class="section-title">RECEIPT DETAILS</div>
+                    <table class="info-table">
+                        <tr>
+                            <th>Receipt Number:</th>
+                            <td>{{ receipt.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date & Time:</th>
+                            <td>{{ receipt.received_at|date:"F d, Y • H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Payment Method:</th>
+                            <td><span class="payment-method">{{ receipt.get_payment_method_display }}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Reference Invoice:</th>
+                            <td>#{{ invoice.id }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Amount Section -->
+                <div class="amount-box">
+                    <div class="amount-title">AMOUNT PAID</div>
+                    <div class="amount-value">{{ receipt.amount }}</div>
+                </div>
+            </div>
+
+            <!-- Spacer -->
+            <div class="column-spacer"></div>
+
+            <!-- Right Column -->
+            <div class="column">
+                <!-- Customer Information Section -->
+                <div class="section">
+                    <div class="section-title">CUSTOMER INFORMATION</div>
+                    <table class="info-table">
+                        <tr>
+                            <th>Customer:</th>
+                            <td>{{ invoice.customer.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ invoice.customer.mobile_number }}</td>
+                        </tr>
+                        {% if invoice.customer.email %}
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ invoice.customer.email }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if invoice.customer.address %}
+                        <tr>
+                            <th>Address:</th>
+                            <td>{{ invoice.customer.address }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+
+                <!-- Shop Information -->
+                <div class="section">
+                    <div class="section-title">SHOP INFORMATION</div>
+                    <table class="info-table">
+                        <tr>
+                            <th>Shop:</th>
+                            <td>{{ invoice.shop.name }} ({{ invoice.shop.code }})</td>
+                        </tr>
+                        <tr>
+                            <th>Location:</th>
+                            <td>{{ invoice.shop.location }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Summary Section -->
+        <div class="section">
+            <div class="section-title">INVOICE SUMMARY</div>
+            <table class="summary-table">
+                <tr>
+                    <th>Description</th>
+                    <th class="text-right">Amount</th>
+                </tr>
+                <tr>
+                    <td>Invoice Total</td>
+                    <td class="text-right">{{ invoice.total_amount }}</td>
+                </tr>
+                <tr>
+                    <td>Previous Payments</td>
+                    <td class="text-right">{{ invoice.paid_amount|add:"-receipt.amount" }}</td>
+                </tr>
+                <tr>
+                    <td>This Payment ({{ receipt.received_at|date:"d/m/Y" }})</td>
+                    <td class="text-right">{{ receipt.amount }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Remaining Balance</strong></td>
+                    <td class="text-right"><strong>{{ invoice.get_due_amount }}</strong></td>
+                </tr>
+            </table>
+            <p class="receipt-note">This receipt confirms payment for Invoice #{{ invoice.id }}. Please retain for your records.</p>
+        </div>
+
+        <!-- Signature Section -->
+        <div class="signatures">
+            <div class="signature">
+                <div class="signature-line"></div>
+                <div class="signature-title">Received By</div>
+            </div>
+            <div class="signature">
+                <div class="signature-line"></div>
+                <div class="signature-title">Authorized Signature</div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p class="compact-margin">Thank you for your business. This receipt is proof of payment for the specified invoice.</p>
+            <p class="compact-margin">If you have any questions, please contact us at {{ company_phone }} or {{ company_email }}.</p>
+        </div>
+    </div>
+</body>
+</html>
