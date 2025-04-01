@@ -22,6 +22,20 @@ class SalesInvoice(models.Model):
     def get_due_amount(self):
         """Calculate remaining due amount."""
         return self.total_amount - self.paid_amount
+    
+    def payment_status(self):
+        from django.utils import timezone
+        from django.utils.html import format_html
+        
+        if self.total_amount <= self.paid_amount:
+            return format_html('<span style="color: green; font-weight: bold;">Paid</span>')
+        elif self.due_date and self.due_date < timezone.now().date():
+            return format_html('<span style="color: red; font-weight: bold;">Overdue</span>')
+        elif self.paid_amount == 0:
+            return format_html('<span style="color: orange; font-weight: bold;">Unpaid</span>')
+        else:
+            return format_html('<span style="color: blue; font-weight: bold;">Partially Paid</span>')
+    payment_status.short_description = 'Status'
 
 class SalesInvoiceItem(models.Model):
     sales_invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='items')
