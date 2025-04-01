@@ -6,6 +6,7 @@ class SalesInvoice(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, editable=False)
     paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, editable=False)
+    due_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
