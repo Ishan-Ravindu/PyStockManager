@@ -36,7 +36,7 @@ class Customer(models.Model):
     black_list = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.name}-({self.mobile_number}) - Credit: {self.credit}/{self.credit_limit} ({self.credit_period} days)"
+        return f"{self.name}-({self.mobile_number})"
     
     def credit_status(self):
         if self.credit_limit <= 0:

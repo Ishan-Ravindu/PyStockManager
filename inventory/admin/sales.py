@@ -12,7 +12,7 @@ class SalesInvoiceItemInline(admin.TabularInline):
 
 @admin.register(SalesInvoice)
 class SalesInvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'shop', 'customer', 'total_amount', 'paid_amount', 'created_at', 'due_date', 'payment_status', 'add_receipt_button', 'view_receipts')
+    list_display = ('id', 'shop', 'customer', 'total_amount', 'paid_amount', 'created_at', 'due_date', 'payment_status', 'add_receipt_button', 'view_receipts', 'view_invoice_pdf')
     list_filter = ('shop', 'customer', 'created_at')
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'created_at')
@@ -33,6 +33,13 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
             links.append(f'<a href="{url}">{receipt.id}({receipt.amount})</a>')        
         return mark_safe(', '.join(links))
     view_receipts.short_description = 'Receipts history'
+
+    def view_invoice_pdf(self, obj):
+        if obj.id:
+            url = reverse('generate_invoice_pdf', args=[obj.id])
+            return format_html('<a class="button" href="{}" target="_blank"><i class="fa fa-file-pdf"></i> View PDF</a>', url)
+        return "-"
+    view_invoice_pdf.short_description = 'Invoice PDF'
 
     save_as = False
     save_on_top = False
@@ -72,10 +79,3 @@ class ReceiptAdmin(admin.ModelAdmin):
         return False 
     def has_delete_permission(self, request, obj=None):
         return False
-
-    class Media:
-        css = {
-            'all': [
-                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
-            ],
-        }
