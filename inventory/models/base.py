@@ -2,11 +2,12 @@ from django.db import models
 
 class Shop(models.Model):
     name = models.CharField(max_length=255)
+    code = models.CharField(max_length=255)
     location = models.TextField()
     is_warehouse = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}({self.code})"
 
 class Supplier(models.Model):
     name = models.CharField(max_length=255)
@@ -31,7 +32,7 @@ class Product(models.Model):
     profit_margin = models.DecimalField(max_digits=5, decimal_places=2, default=10.00)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} - sell price:####'
 
     def get_average_cost(self):
         """Calculate the average cost of all purchase invoices."""

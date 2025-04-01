@@ -61,7 +61,7 @@ class StockTransferAdminForm(forms.ModelForm):
 @admin.register(StockTransfer)
 class StockTransferAdmin(admin.ModelAdmin):
     form = StockTransferAdminForm
-    list_display = ('id', 'from_shop', 'to_shop', 'created_at')
+    list_display = ('id', 'from_shop', 'to_shop', 'description', 'created_at')
     list_filter = ('from_shop', 'to_shop', 'created_at')
     search_fields = ('from_shop__name', 'to_shop__name')
     readonly_fields = ('created_at',)

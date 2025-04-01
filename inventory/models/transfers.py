@@ -4,6 +4,7 @@ from .base import Shop, Product
 class StockTransfer(models.Model):
     from_shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='outgoing_transfers')
     to_shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='incoming_transfers')
+    description = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class StockTransferItem(models.Model):

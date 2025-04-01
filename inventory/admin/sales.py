@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from inventory.models.sales import Receipt
 from ..models import SalesInvoice, SalesInvoiceItem
 
 class SalesInvoiceItemInline(admin.TabularInline):
@@ -12,3 +14,7 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'created_at')
     inlines = [SalesInvoiceItemInline]
+
+@admin.register(Receipt)
+class ReceiptAdmin(admin.ModelAdmin):
+    list_display = ('id', 'sales_invoice', 'amount', 'payment_method', 'received_at')
