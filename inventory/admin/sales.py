@@ -9,7 +9,7 @@ class SalesInvoiceItemInline(admin.TabularInline):
 
 @admin.register(SalesInvoice)
 class SalesInvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'shop', 'customer', 'total_amount', 'created_at')
+    list_display = ('id', 'shop', 'customer', 'total_amount', 'paid_amount', 'created_at')
     list_filter = ('shop', 'customer', 'created_at')
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'created_at')
