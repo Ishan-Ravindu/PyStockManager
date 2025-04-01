@@ -32,7 +32,7 @@ class Product(models.Model):
     profit_margin = models.DecimalField(max_digits=5, decimal_places=2, default=10.00)
 
     def __str__(self):
-        return f'{self.name} - Selling Price : {self.get_selling_price()}'
+        return f'{self.name} - Latest selling Price : {self.get_selling_price()}'
 
     def get_average_cost(self):
         """Calculate the average cost of all purchase invoices."""

@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from .base import Customer, Shop, Product
 
 class SalesInvoice(models.Model):
@@ -43,9 +44,20 @@ class Receipt(models.Model):
 
     def __str__(self):
         return f"Receipt {self.id} for Sales {self.sales_invoice.id}"
+        
+    def clean(self):
+        """Validate that amount doesn't exceed the remaining unpaid amount."""
+        if self.amount is not None and self.sales_invoice:
+            remaining_amount = self.sales_invoice.total_amount - self.sales_invoice.paid_amount
+            if self.amount > remaining_amount:
+                raise ValidationError({
+                    'amount': f'Receipt amount cannot exceed the remaining unpaid amount of {remaining_amount}.'
+                })
+        super().clean()
 
     def save(self, *args, **kwargs):
         """Update paid amount in SalesInvoice and reduce customer's credit when a receipt is created."""
+        self.full_clean()  # Run validation before saving
         super().save(*args, **kwargs)
         self.sales_invoice.paid_amount += self.amount
         self.sales_invoice.save()

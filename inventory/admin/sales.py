@@ -45,7 +45,16 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
             url = reverse('admin:inventory_receipt_change', args=[receipt.id])
             links.append(f'<a href="{url}">{receipt.id}({receipt.amount})</a>')        
         return mark_safe(', '.join(links))
-    view_receipts.short_description = 'Receipts'
+    view_receipts.short_description = 'Receipts history'
+
+    save_as = False
+    save_on_top = False
+
+    def has_change_permission(self, request, obj=None):
+        return False 
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 @admin.register(Receipt)
 class ReceiptAdmin(admin.ModelAdmin):
@@ -60,3 +69,12 @@ class ReceiptAdmin(admin.ModelAdmin):
             except (ValueError, TypeError):
                 pass
         return form
+    
+    save_as = False
+    save_on_top = False
+
+    def has_change_permission(self, request, obj=None):
+        return False 
+
+    def has_delete_permission(self, request, obj=None):
+        return False
