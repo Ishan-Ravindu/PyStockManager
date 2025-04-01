@@ -15,9 +15,7 @@ class PurchaseInvoiceAdmin(admin.ModelAdmin):
 
     save_as = False
     save_on_top = False
-
     def has_change_permission(self, request, obj=None):
         return False 
-
     def has_delete_permission(self, request, obj=None):
         return False

@@ -14,7 +14,7 @@ class SupplierAdmin(admin.ModelAdmin):
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'contact_info', 'credit', 'credit_limit', 'credit_period')
+    list_display = ('name', 'contact_info', 'credit', 'credit_limit', 'credit_period', 'combined_status', 'black_list')
     list_filter = ('credit_period',)
     search_fields = ('name', 'contact_info')
 

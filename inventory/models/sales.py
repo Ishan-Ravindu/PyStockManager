@@ -12,6 +12,15 @@ class SalesInvoice(models.Model):
 
     def __str__(self):
         return f"{self.shop.code}#{self.id} - ({self.paid_amount}/{self.total_amount})"
+    
+    def clean(self):
+        super().clean()
+        if self.customer and self.customer.black_list:
+            raise ValidationError("Cannot create an invoice for a blacklisted customer.")
+                
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def update_total_amount(self):
         """Calculate and update total amount from sales invoice items."""
