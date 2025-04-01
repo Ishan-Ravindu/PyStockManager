@@ -1,5 +1,11 @@
 from django.db import models
 from django.utils.html import format_html
+from django.core.validators import RegexValidator
+
+phone_regex = RegexValidator(
+    regex=r'^0\d{9}$',
+    message="Phone number must be in the format: '0XXXXXXXXX'. Exactly 10 digits starting with 0."
+)
 
 class Shop(models.Model):
     name = models.CharField(max_length=255)
@@ -12,21 +18,25 @@ class Shop(models.Model):
 
 class Supplier(models.Model):
     name = models.CharField(max_length=255)
-    contact_info = models.TextField()
+    mobile_number = models.CharField(validators=[phone_regex], max_length=10)
+    address = models.TextField(null=True, blank=True)
+    email = models.EmailField(max_length=254, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 class Customer(models.Model):
     name = models.CharField(max_length=255)
-    contact_info = models.TextField()
+    mobile_number = models.CharField(validators=[phone_regex], max_length=10)
+    address = models.TextField(null=True, blank=True)
+    email = models.EmailField(max_length=254, null=True, blank=True)
     credit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     credit_limit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     credit_period = models.IntegerField(default=0)
     black_list = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.name} - Credit: {self.credit}/{self.credit_limit} ({self.credit_period} days)"
+        return f"{self.name}-({self.mobile_number}) - Credit: {self.credit}/{self.credit_limit} ({self.credit_period} days)"
     
     def credit_status(self):
         if self.credit_limit <= 0:

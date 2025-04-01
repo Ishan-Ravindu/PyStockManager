@@ -9,14 +9,14 @@ class ShopAdmin(admin.ModelAdmin):
 
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'contact_info')
-    search_fields = ('name', 'contact_info')
+    list_display = ('name', 'address', 'mobile_number')
+    search_fields = ('name', 'mobile_number')
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'contact_info', 'credit', 'credit_limit', 'credit_period', 'combined_status', 'black_list')
+    list_display = ('name', 'mobile_number', 'address', 'credit', 'credit_limit', 'credit_period', 'combined_status', 'black_list')
     list_filter = ('credit_period',)
-    search_fields = ('name', 'contact_info')
+    search_fields = ('name', 'mobile_number')
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
