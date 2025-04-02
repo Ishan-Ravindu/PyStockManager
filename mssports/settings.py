@@ -3,14 +3,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-cjr!0n7&56tn7_u09#lhw9@ud14@0td1q@zl#%zd*9jk5st-qu")
+SECRET_KEY = "23423rfe7!x8f3p@4nwq2z*6k9jm5"
 
-DEBUG = int(os.environ.get("DEBUG", default=True))
+DEBUG = False
 
-if DEBUG:
-    ALLOWED_HOSTS = ['*']
-else:
-    ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = ['*']
+
 
 INSTALLED_APPS = [
     "jazzmin",
@@ -55,6 +53,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "mssports.wsgi.application"
 
 if DEBUG:
+    # dev container config
     DATABASES = {
         'default': {
             'ENGINE': "django.db.backends.postgresql",
@@ -68,12 +67,15 @@ if DEBUG:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': os.environ.get("SQL_ENGINE"),
-            'NAME': os.environ.get("SQL_DATABASE"),
-            'USER': os.environ.get("SQL_USER"),
-            'PASSWORD': os.environ.get("SQL_PASSWORD"),
-            'HOST': os.environ.get("SQL_HOST"),
-            'PORT': os.environ.get("SQL_PORT"),
+            'ENGINE': "django.db.backends.mysql",
+            'NAME': "mssports",
+            'USER': "mssports",
+            'PASSWORD': "123Mssports123Mssports",
+            'HOST': "198.12.235.193",
+            'PORT': "3306",
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
+            }
         }
     }
 
