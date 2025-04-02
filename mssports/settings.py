@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "23423rfe7!x8f3p@4nwq2z*6k9jm5"
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -52,32 +52,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mssports.wsgi.application"
 
-if DEBUG:
-    # dev container config
-    DATABASES = {
-        'default': {
-            'ENGINE': "django.db.backends.postgresql",
-            'NAME': "postgres",
-            'USER': "postgres",
-            'PASSWORD': "postgres",
-            'HOST': "localhost",
-            'PORT': "5432",
+DATABASES = {
+    'default': {
+        'ENGINE': "django.db.backends.mysql",
+        'NAME': "mssports",
+        'USER': "mssports",
+        'PASSWORD': "123Mssports123Mssports",
+        'HOST': "198.12.235.193",
+        'PORT': "3306",
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': "django.db.backends.mysql",
-            'NAME': "mssports",
-            'USER': "mssports",
-            'PASSWORD': "123Mssports123Mssports",
-            'HOST': "198.12.235.193",
-            'PORT': "3306",
-            'OPTIONS': {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
-            }
-        }
-    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
