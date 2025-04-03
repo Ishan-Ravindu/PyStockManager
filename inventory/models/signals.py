@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from .inventory import Stock
 from .purchases import PurchaseInvoiceItem
 from .transfers import StockTransferItem
-from .sales import SalesInvoice, SalesInvoiceItem
+from .sales import Receipt, SalesInvoice, SalesInvoiceItem
 
 @receiver(post_save, sender=PurchaseInvoiceItem)
 def update_stock_and_price_after_purchase(sender, instance, **kwargs):
@@ -63,3 +63,7 @@ def populate_sales_price(sender, instance, **kwargs):
     """Auto-populate price from product's selling price if not set."""
     if instance.price is None:
         instance.price = instance.product.get_selling_price()
+
+@receiver(post_save, sender=Receipt)
+def update_account_on_receipt_create(sender, instance, created, **kwargs):
+    instance.account.update_balance(instance.amount)

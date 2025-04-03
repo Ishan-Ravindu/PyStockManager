@@ -1,5 +1,7 @@
 from django.db import models
 from django.forms import ValidationError
+
+from accounts.models import Account
 from .base import Customer, Shop, Product
 
 class SalesInvoice(models.Model):
@@ -58,11 +60,7 @@ class SalesInvoiceItem(models.Model):
 class Receipt(models.Model):
     sales_invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='receipts')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = models.CharField(max_length=50, choices=[
-        ('cash', 'Cash'),
-        ('card', 'Card'),
-        ('bank_transfer', 'Bank Transfer')
-    ])
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='account')
     received_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -51,8 +51,8 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
 
 @admin.register(Receipt)
 class ReceiptAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sales_invoice', 'amount', 'payment_method', 'received_at', 'view_receipt_pdf')
-    list_filter = ('payment_method', 'received_at')
+    list_display = ('id', 'sales_invoice', 'amount', 'account', 'received_at', 'view_receipt_pdf')
+    list_filter = ('account', 'received_at')
     search_fields = ('sales_invoice__customer__name',)
     
     def view_receipt_pdf(self, obj):
