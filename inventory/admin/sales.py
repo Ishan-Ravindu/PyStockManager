@@ -10,13 +10,30 @@ class SalesInvoiceItemInline(admin.TabularInline):
     model = SalesInvoiceItem
     extra = 1
 
+class ReceiptInline(admin.TabularInline):
+    model = Receipt
+    extra = 0
+    readonly_fields = ('amount', 'account', 'received_at', 'view_receipt_pdf')
+    can_delete = False
+    max_num = 0
+    
+    def has_add_permission(self, request, obj=None):
+        return False
+        
+    def view_receipt_pdf(self, obj):
+        if obj.id:
+            url = reverse('generate_receipt_pdf', args=[obj.id])
+            return format_html('<a class="button" href="{}" target="_blank"><i class="fa fa-file-pdf"></i> View PDF</a>', url)
+        return "-"
+    view_receipt_pdf.short_description = 'Receipt PDF'
+
 @admin.register(SalesInvoice)
 class SalesInvoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'shop', 'customer', 'total_amount', 'paid_amount', 'created_at', 'due_date', 'payment_status', 'add_receipt_button', 'view_receipts', 'view_invoice_pdf')
     list_filter = ('shop', 'customer', 'created_at')
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'created_at')
-    inlines = [SalesInvoiceItemInline]
+    inlines = [SalesInvoiceItemInline, ReceiptInline]
     list_per_page = 20
 
     def add_receipt_button(self, obj):
@@ -80,4 +97,3 @@ class ReceiptAdmin(admin.ModelAdmin):
         form.base_fields['sales_invoice'].widget.can_add_related = False
 
         return form
-    
