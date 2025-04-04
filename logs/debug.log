@@ -4,3 +4,15 @@ INFO 2025-04-05 04:30:25,458 autoreload /workspaces/mssports/inventory/admin/pur
 INFO 2025-04-05 04:30:25,813 autoreload Watching for file changes with StatReloader
 INFO 2025-04-05 04:30:32,422 autoreload /workspaces/mssports/inventory/admin/transfers.py changed, reloading.
 INFO 2025-04-05 04:30:32,793 autoreload Watching for file changes with StatReloader
+INFO 2025-04-05 04:44:19,142 autoreload /workspaces/mssports/inventory/signals/receipt_signals.py changed, reloading.
+INFO 2025-04-05 04:44:19,474 autoreload Watching for file changes with StatReloader
+INFO 2025-04-05 04:56:33,387 autoreload /workspaces/mssports/inventory/signals/receipt_signals.py changed, reloading.
+INFO 2025-04-05 04:56:33,697 autoreload Watching for file changes with StatReloader
+INFO 2025-04-05 04:56:38,231 autoreload /workspaces/mssports/inventory/signals/receipt_signals.py changed, reloading.
+INFO 2025-04-05 04:56:38,542 autoreload Watching for file changes with StatReloader
+INFO 2025-04-05 04:56:44,114 autoreload /workspaces/mssports/inventory/signals/receipt_signals.py changed, reloading.
+INFO 2025-04-05 04:56:44,419 autoreload Watching for file changes with StatReloader
+INFO 2025-04-05 04:57:11,246 autoreload /workspaces/mssports/inventory/signals/sale_signals.py changed, reloading.
+INFO 2025-04-05 04:57:11,534 autoreload Watching for file changes with StatReloader
+INFO 2025-04-05 04:57:39,635 purchase_signals Creating new purchase invoice item for product Drop Eight at shop Smith Group Store(ST01)
+INFO 2025-04-05 04:57:39,636 purchase_signals Updated existing stock for product Drop Eight at shop Smith Group Store(ST01). New quantity: 100, New average cost: 12.00

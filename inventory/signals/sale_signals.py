@@ -2,7 +2,6 @@ from decimal import Decimal
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete
 from django.dispatch import receiver
 from django.db import transaction
-from django.core.exceptions import ValidationError
 import logging
 
 from inventory.models.inventory import Stock
@@ -10,6 +9,80 @@ from inventory.models.sales import SalesInvoice, SalesInvoiceItem
 
 # Set up logger
 logger = logging.getLogger(__name__)
+
+@receiver(pre_save, sender=SalesInvoice)
+def store_original_invoice_data(sender, instance, **kwargs):
+    """
+    Store the original shop and customer data before a SalesInvoice is updated.
+    
+    This allows proper handling of shop stock and customer credit changes.
+    """
+    if instance.pk:
+        try:
+            original = SalesInvoice.objects.get(pk=instance.pk)
+            instance._original_shop = original.shop
+            instance._original_customer = original.customer
+            instance._original_total_amount = original.total_amount
+            logger.debug(f"Stored original invoice data: shop={original.shop}, "
+                         f"customer={original.customer}, total_amount={original.total_amount}")
+        except SalesInvoice.DoesNotExist:
+            logger.warning(f"Could not find original invoice with ID {instance.pk}")
+            pass
+
+
+@receiver(post_save, sender=SalesInvoice)
+def handle_invoice_customer_change(sender, instance, created, **kwargs):
+    """
+    When a sales invoice's customer is changed, update customer credits.
+    """
+    if created:
+        # For new invoices, update the customer credit
+        if instance.customer:
+            with transaction.atomic():
+                due_amount = instance.total_amount - instance.paid_amount
+                instance.customer.credit += due_amount
+                instance.customer.save(update_fields=['credit'])
+                logger.info(f"Updated credit for new customer {instance.customer}: increased by {due_amount}")
+        return
+    
+    # We only care about customer changes for existing invoices
+    if not hasattr(instance, '_original_customer') or not hasattr(instance, '_original_total_amount'):
+        return
+        
+    customer_changed = instance._original_customer != instance.customer
+    amount_changed = instance._original_total_amount != instance.total_amount
+    
+    if not (customer_changed or amount_changed):
+        return
+    
+    with transaction.atomic():
+        # Handle customer change
+        if customer_changed:
+            # Calculate the unpaid amount
+            due_amount = instance.total_amount - instance.paid_amount
+            
+            # Remove credit from original customer if exists
+            if instance._original_customer:
+                instance._original_customer.credit -= due_amount
+                instance._original_customer.save(update_fields=['credit'])
+                logger.info(f"Removed credit from original customer {instance._original_customer}: decreased by {due_amount}")
+            
+            # Add credit to new customer if exists
+            if instance.customer:
+                instance.customer.credit += due_amount
+                instance.customer.save(update_fields=['credit'])
+                logger.info(f"Added credit to new customer {instance.customer}: increased by {due_amount}")
+        
+        # Handle total amount change (without customer change)
+        elif amount_changed and instance.customer:
+            # Calculate the delta in total amount
+            amount_delta = instance.total_amount - instance._original_total_amount
+            
+            # Update customer credit based on the delta
+            instance.customer.credit += amount_delta
+            instance.customer.save(update_fields=['credit'])
+            logger.info(f"Adjusted credit for customer {instance.customer} due to amount change: {amount_delta}")
+
 
 @receiver(pre_save, sender=SalesInvoiceItem)
 def store_original_sales_item_data(sender, instance, **kwargs):
@@ -24,7 +97,12 @@ def store_original_sales_item_data(sender, instance, **kwargs):
             instance._original_quantity = original.quantity
             instance._original_product = original.product
             instance._original_invoice = original.sales_invoice
+            instance._original_price = original.price
+            logger.debug(f"Stored original sales item data: quantity={original.quantity}, "
+                       f"product={original.product}, invoice={original.sales_invoice}, "
+                       f"price={original.price}")
         except SalesInvoiceItem.DoesNotExist:
+            logger.warning(f"Could not find original sales item with ID {instance.pk}")
             pass
 
 
@@ -70,9 +148,18 @@ def update_stock_on_sales_item_save(sender, instance, created, **kwargs):
             
             # Update the invoice total
             instance.sales_invoice.update_total_amount()
+            logger.info(f"Updated total for invoice {instance.sales_invoice.id}")
+            
+            # Update customer credit if customer exists
+            if instance.sales_invoice.customer:
+                item_total = instance.quantity * instance.price
+                instance.sales_invoice.customer.credit += item_total
+                instance.sales_invoice.customer.save(update_fields=['credit'])
+                logger.info(f"Increased credit for customer {instance.sales_invoice.customer} by {item_total}")
     else:
         # Handle updates to existing items
-        if not hasattr(instance, '_original_quantity'):
+        if not hasattr(instance, '_original_quantity') or not hasattr(instance, '_original_price'):
+            logger.warning(f"Missing original data for sales item {instance.pk}")
             return
         
         product_changed = (hasattr(instance, '_original_product') and 
@@ -80,6 +167,11 @@ def update_stock_on_sales_item_save(sender, instance, created, **kwargs):
         
         invoice_changed = (hasattr(instance, '_original_invoice') and 
                           instance._original_invoice != instance.sales_invoice)
+        
+        # Calculate money changes for customer credit
+        old_total = instance._original_quantity * instance._original_price
+        new_total = instance.quantity * instance.price
+        money_change = new_total - old_total
         
         with transaction.atomic():
             try:
@@ -117,8 +209,24 @@ def update_stock_on_sales_item_save(sender, instance, created, **kwargs):
                         logger.info(f"Stock reduced by {instance.quantity} for product {product} in shop {shop}")
                     except Stock.DoesNotExist:
                         logger.error(f"No stock record found for product {product} in shop {shop}")
+                    
+                    # Handle customer credit changes if invoice changed
+                    if invoice_changed:
+                        # Remove credit from original customer if exists
+                        if instance._original_invoice.customer:
+                            instance._original_invoice.customer.credit -= old_total
+                            instance._original_invoice.customer.save(update_fields=['credit'])
+                            logger.info(f"Reduced credit for original customer "
+                                       f"{instance._original_invoice.customer} by {old_total}")
+                        
+                        # Add credit to new customer if exists
+                        if instance.sales_invoice.customer:
+                            instance.sales_invoice.customer.credit += new_total
+                            instance.sales_invoice.customer.save(update_fields=['credit'])
+                            logger.info(f"Increased credit for new customer "
+                                       f"{instance.sales_invoice.customer} by {new_total}")
                 else:
-                    # Just a quantity change on the same product
+                    # Just a quantity or price change on the same product
                     quantity_change = instance.quantity - instance._original_quantity
                     
                     if quantity_change != 0:
@@ -138,6 +246,12 @@ def update_stock_on_sales_item_save(sender, instance, created, **kwargs):
                             logger.info(f"Stock adjusted by {-quantity_change} for product {product} in shop {shop}")
                         except Stock.DoesNotExist:
                             logger.error(f"No stock record found for product {product} in shop {shop}")
+                    
+                    # Update customer credit if money changed and customer exists
+                    if money_change != 0 and instance.sales_invoice.customer:
+                        instance.sales_invoice.customer.credit += money_change
+                        instance.sales_invoice.customer.save(update_fields=['credit'])
+                        logger.info(f"Adjusted credit for customer {instance.sales_invoice.customer} by {money_change}")
             except Exception as e:
                 logger.error(f"Error updating stock on sales item save: {str(e)}")
                 raise
@@ -145,7 +259,9 @@ def update_stock_on_sales_item_save(sender, instance, created, **kwargs):
             # Update the invoice totals
             if invoice_changed and instance._original_invoice:
                 instance._original_invoice.update_total_amount()
+                logger.info(f"Updated total for original invoice {instance._original_invoice.id}")
             instance.sales_invoice.update_total_amount()
+            logger.info(f"Updated total for invoice {instance.sales_invoice.id}")
 
 
 @receiver(pre_delete, sender=SalesInvoiceItem)
@@ -156,6 +272,7 @@ def update_stock_on_sales_item_delete(sender, instance, **kwargs):
     This function:
     1. Returns the quantity back to the shop's stock
     2. Updates the invoice total
+    3. Updates customer credit
     """
     with transaction.atomic():
         shop = instance.sales_invoice.shop
@@ -177,6 +294,13 @@ def update_stock_on_sales_item_delete(sender, instance, **kwargs):
                 selling_price=Decimal('0.00')
             )
             logger.warning(f"Created new stock record for product {product} in shop {shop} with returned quantity")
+        
+        # Update customer credit if customer exists
+        if instance.sales_invoice.customer:
+            item_total = instance.quantity * instance.price
+            instance.sales_invoice.customer.credit -= item_total
+            instance.sales_invoice.customer.save(update_fields=['credit'])
+            logger.info(f"Reduced credit for customer {instance.sales_invoice.customer} by {item_total} (item deleted)")
         
         # The invoice total will be updated in the post_delete signal
         
@@ -258,14 +382,15 @@ def handle_invoice_shop_change(sender, instance, created, **kwargs):
                 logger.error(f"No stock record found for product {item.product} in new shop {instance.shop}")
 
 
-@receiver(pre_save, sender=SalesInvoice)
-def store_original_invoice_shop(sender, instance, **kwargs):
+@receiver(pre_delete, sender=SalesInvoice)
+def handle_invoice_delete(sender, instance, **kwargs):
     """
-    Store the original shop before a SalesInvoice is updated.
+    When a sales invoice is deleted, update customer credit.
     """
-    if instance.pk:
-        try:
-            original = SalesInvoice.objects.get(pk=instance.pk)
-            instance._original_shop = original.shop
-        except SalesInvoice.DoesNotExist:
-            pass
+    with transaction.atomic():
+        # Update customer credit if customer exists
+        if instance.customer:
+            due_amount = instance.total_amount - instance.paid_amount
+            instance.customer.credit -= due_amount
+            instance.customer.save(update_fields=['credit'])
+            logger.info(f"Reduced credit for customer {instance.customer} by {due_amount} (invoice deleted)")

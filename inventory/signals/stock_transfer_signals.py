@@ -24,8 +24,11 @@ def store_original_transfer_data(sender, instance, **kwargs):
             original = StockTransfer.objects.get(pk=instance.pk)
             instance._original_from_shop = original.from_shop
             instance._original_to_shop = original.to_shop
+            logger.debug(f"Stored original shops for transfer {instance.pk}: "
+                         f"from {original.from_shop} to {original.to_shop}")
         except StockTransfer.DoesNotExist:
             # Instance might have been deleted
+            logger.warning(f"Could not find original transfer with ID {instance.pk}")
             pass
 
 
@@ -38,6 +41,7 @@ def handle_transfer_shop_changes(sender, instance, created, **kwargs):
     1. Reverses stock changes from the original shops
     2. Applies stock changes to the new shops
     3. Handles creation of new stock records when needed
+    4. Updates average costs appropriately
     """
     if created:
         return  # No need to handle shop changes for new transfers
@@ -52,6 +56,10 @@ def handle_transfer_shop_changes(sender, instance, created, **kwargs):
     if not shops_changed:
         return
         
+    logger.info(f"Shops changed for transfer {instance.pk}: "
+               f"from {instance._original_from_shop}->{instance._original_to_shop} "
+               f"to {instance.from_shop}->{instance.to_shop}")
+    
     # Process each transfer item
     transfer_items = StockTransferItem.objects.filter(stock_transfer=instance)
     for item in transfer_items:
@@ -64,20 +72,35 @@ def handle_transfer_shop_changes(sender, instance, created, **kwargs):
                 )
                 original_from_stock.quantity += item.quantity
                 original_from_stock.save()
+                
+                logger.info(f"Returned {item.quantity} units to original source shop "
+                           f"{instance._original_from_shop} for product {item.product}")
             except Stock.DoesNotExist:
+                logger.warning(f"No stock record found in original source shop "
+                              f"{instance._original_from_shop} for product {item.product}")
                 pass
                 
-            # Remove stock from original destination shop
+            # Remove stock from original destination shop with average cost adjustment
             try:
                 original_to_stock = Stock.objects.get(
                     shop=instance._original_to_shop, 
                     product=item.product
                 )
+                
+                # No need to adjust average cost when removing items in a transfer
+                # Since the transfer doesn't involve buying at a different price
                 original_to_stock.quantity -= item.quantity
                 if original_to_stock.quantity < 0:
                     original_to_stock.quantity = 0
+                    logger.warning(f"Prevented negative stock in original destination shop "
+                                  f"{instance._original_to_shop} for product {item.product}")
                 original_to_stock.save()
+                
+                logger.info(f"Removed {item.quantity} units from original destination shop "
+                           f"{instance._original_to_shop} for product {item.product}")
             except Stock.DoesNotExist:
+                logger.warning(f"No stock record found in original destination shop "
+                              f"{instance._original_to_shop} for product {item.product}")
                 pass
                 
             # Remove stock from new source shop
@@ -89,18 +112,52 @@ def handle_transfer_shop_changes(sender, instance, created, **kwargs):
                 new_from_stock.quantity -= item.quantity
                 if new_from_stock.quantity < 0:
                     new_from_stock.quantity = 0
+                    logger.warning(f"Prevented negative stock in new source shop "
+                                  f"{instance.from_shop} for product {item.product}")
                 new_from_stock.save()
+                
+                logger.info(f"Removed {item.quantity} units from new source shop "
+                           f"{instance.from_shop} for product {item.product}")
             except Stock.DoesNotExist:
+                logger.warning(f"No stock record found in new source shop "
+                              f"{instance.from_shop} for product {item.product}")
                 pass
                 
-            # Add stock to new destination shop
+            # Add stock to new destination shop with average cost calculation
             try:
                 new_to_stock = Stock.objects.get(
                     shop=instance.to_shop, 
                     product=item.product
                 )
-                new_to_stock.quantity += item.quantity
+                
+                # For transfers, we need to properly handle average cost
+                # The transferred items bring their average cost from the source shop
+                try:
+                    from_stock = Stock.objects.get(
+                        shop=instance.from_shop, 
+                        product=item.product
+                    )
+                    # Get the average cost from source shop
+                    transfer_cost = from_stock.average_cost
+                except Stock.DoesNotExist:
+                    # If source stock doesn't exist, use destination's current average cost
+                    transfer_cost = new_to_stock.average_cost
+                    logger.warning(f"Using destination's average cost since source stock not found")
+                
+                # Calculate new average cost
+                old_value = new_to_stock.average_cost * new_to_stock.quantity
+                transfer_value = transfer_cost * item.quantity
+                new_total_quantity = new_to_stock.quantity + item.quantity
+                
+                if new_total_quantity > 0:
+                    new_to_stock.average_cost = (old_value + transfer_value) / new_total_quantity
+                
+                new_to_stock.quantity = new_total_quantity
                 new_to_stock.save()
+                
+                logger.info(f"Added {item.quantity} units to new destination shop "
+                           f"{instance.to_shop} for product {item.product} "
+                           f"with average cost {new_to_stock.average_cost}")
             except Stock.DoesNotExist:
                 # Create new stock record if doesn't exist in destination shop
                 try:
@@ -108,6 +165,7 @@ def handle_transfer_shop_changes(sender, instance, created, **kwargs):
                         shop=instance.from_shop, 
                         product=item.product
                     )
+                    # Create with source shop's average cost and selling price
                     Stock.objects.create(
                         shop=instance.to_shop,
                         product=item.product,
@@ -115,6 +173,11 @@ def handle_transfer_shop_changes(sender, instance, created, **kwargs):
                         average_cost=new_from_stock.average_cost,
                         selling_price=new_from_stock.selling_price
                     )
+                    
+                    logger.info(f"Created new stock record in destination shop "
+                               f"{instance.to_shop} for product {item.product} "
+                               f"with quantity {item.quantity} and average cost "
+                               f"{new_from_stock.average_cost}")
                 except Stock.DoesNotExist:
                     # Create with default values if source stock doesn't exist
                     Stock.objects.create(
@@ -124,6 +187,9 @@ def handle_transfer_shop_changes(sender, instance, created, **kwargs):
                         average_cost=Decimal('0.00'),
                         selling_price=Decimal('0.00')
                     )
+                    
+                    logger.warning(f"Created new stock record with default values in destination shop "
+                                  f"{instance.to_shop} for product {item.product}")
 
 
 @receiver(pre_save, sender=StockTransferItem)
@@ -138,7 +204,10 @@ def store_original_item_data(sender, instance, **kwargs):
             original = StockTransferItem.objects.get(pk=instance.pk)
             instance._original_quantity = original.quantity            
             instance._original_product = original.product
+            logger.debug(f"Stored original transfer item data: "
+                        f"quantity={original.quantity}, product={original.product}")
         except StockTransferItem.DoesNotExist:
+            logger.warning(f"Could not find original transfer item with ID {instance.pk}")
             pass
 
 
@@ -149,12 +218,12 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
     
     For new items:
     - Decrease quantity from source shop
-    - Increase quantity in destination shop
+    - Increase quantity in destination shop with appropriate average cost
     
     For updated items:
     - Adjust quantities based on the quantity change
-    - Create new stock records when needed
     - Handle product changes
+    - Update average costs
     """
     if not created:
         # Handle updates to existing items
@@ -229,15 +298,40 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
                                           f"shop {instance.stock_transfer.from_shop}, "
                                           f"product {instance.product}")
                         
+                        # Add to destination with proper average cost
                         try:
                             to_stock = Stock.objects.get(
                                 shop=instance.stock_transfer.to_shop, 
                                 product=instance.product
                             )
+                            
+                            # Get source shop's average cost if available
+                            try:
+                                from_stock = Stock.objects.get(
+                                    shop=instance.stock_transfer.from_shop, 
+                                    product=instance.product
+                                )
+                                transfer_cost = from_stock.average_cost
+                            except Stock.DoesNotExist:
+                                # If no source stock, use destination's current cost
+                                transfer_cost = to_stock.average_cost
+                            
+                            # Calculate new average cost
+                            old_value = to_stock.average_cost * to_stock.quantity
+                            transfer_value = transfer_cost * instance.quantity
+                            new_total_quantity = to_stock.quantity + instance.quantity
+                            
+                            if new_total_quantity > 0:
+                                to_stock.average_cost = (old_value + transfer_value) / new_total_quantity
+                            
                             to_stock.quantity += instance.quantity
                             to_stock.save()
+                            
+                            logger.info(f"Added {instance.quantity} units of product {instance.product} "
+                                       f"to shop {instance.stock_transfer.to_shop} with average cost "
+                                       f"{to_stock.average_cost}")
                         except Stock.DoesNotExist:
-                            # Create new stock record
+                            # Create new stock record if it doesn't exist
                             try:
                                 from_stock = Stock.objects.get(
                                     shop=instance.stock_transfer.from_shop, 
@@ -252,7 +346,7 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
                                 )
                                 logger.info(f"Created new stock record for "
                                            f"shop {instance.stock_transfer.to_shop}, "
-                                           f"product {instance.product}")
+                                           f"product {instance.product} with source shop's pricing")
                             except Stock.DoesNotExist:
                                 Stock.objects.create(
                                     shop=instance.stock_transfer.to_shop,
@@ -285,24 +379,51 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
                                               f"product {instance.product}")
                                 from_stock.quantity = 0
                             from_stock.save()
+                            
+                            logger.info(f"Adjusted source shop stock by {-quantity_change} for "
+                                       f"product {instance.product}")
                         except Stock.DoesNotExist:
                             logger.warning(f"No stock record exists for "
                                           f"shop {instance.stock_transfer.from_shop}, "
                                           f"product {instance.product}")
                             
-                        # Update destination shop stock
+                        # Update destination shop stock with proper average cost calculation
                         try:
                             to_stock = Stock.objects.get(
                                 shop=instance.stock_transfer.to_shop, 
                                 product=instance.product
                             )
+                            
+                            # Only recalculate average cost if adding more items
+                            if quantity_change > 0:
+                                # Get the average cost of transferred items
+                                try:
+                                    from_stock = Stock.objects.get(
+                                        shop=instance.stock_transfer.from_shop, 
+                                        product=instance.product
+                                    )
+                                    transfer_cost = from_stock.average_cost
+                                except Stock.DoesNotExist:
+                                    # Use destination's current cost if source not found
+                                    transfer_cost = to_stock.average_cost
+                                
+                                # Calculate new average cost
+                                old_value = to_stock.average_cost * to_stock.quantity
+                                transfer_value = transfer_cost * quantity_change
+                                new_total_quantity = to_stock.quantity + quantity_change
+                                
+                                if new_total_quantity > 0:
+                                    to_stock.average_cost = (old_value + transfer_value) / new_total_quantity
+                            elif quantity_change < 0:
+                                # When removing items, we don't adjust average cost
+                                # as we're just removing items at whatever cost they came in at
+                                pass
+                            
                             to_stock.quantity += quantity_change
                             to_stock.save()
                             
-                            logger.info(f"Updated destination stock for "
-                                       f"shop {instance.stock_transfer.to_shop}, "
-                                       f"product {instance.product}, "
-                                       f"change: {quantity_change}")
+                            logger.info(f"Adjusted destination shop stock by {quantity_change} for "
+                                       f"product {instance.product}, new average cost: {to_stock.average_cost}")
                         except Stock.DoesNotExist:
                             # Create new stock record if doesn't exist and quantity increased
                             if quantity_change > 0:
@@ -320,7 +441,7 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
                                     )
                                     logger.info(f"Created new stock record for "
                                                f"shop {instance.stock_transfer.to_shop}, "
-                                               f"product {instance.product}")
+                                               f"product {instance.product} with source shop's pricing")
                                 except Stock.DoesNotExist:
                                     Stock.objects.create(
                                         shop=instance.stock_transfer.to_shop,
@@ -334,9 +455,9 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
                                                   f"product {instance.product}")
                 except Exception as e:
                     logger.error(f"Error updating stock on transfer item save: {str(e)}")
-                    raise  # Re-raise the exception after logging
+                    raise  # Re-raise the exception to ensure transaction rollback
         return
-
+        
     # Handle new transfer items
     with transaction.atomic():
         product = instance.product
@@ -347,22 +468,55 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
         # Decrease stock in source shop
         try:
             from_stock = Stock.objects.get(shop=from_shop, product=product)
+            
+            # Check if there's enough stock
+            if from_stock.quantity < quantity:
+                logger.warning(f"Insufficient stock for product {product} in shop {from_shop}. "
+                             f"Available: {from_stock.quantity}, Requested: {quantity}")
+            
             from_stock.quantity -= quantity
             if from_stock.quantity < 0:
                 from_stock.quantity = 0
-            from_stock.save()
-        except Stock.DoesNotExist:
-            pass
+                logger.warning(f"Stock quantity set to zero for product {product} in shop {from_shop}")
             
-        # Increase stock in destination shop
+            from_stock.save()
+            
+            logger.info(f"Reduced stock by {quantity} for product {product} in source shop {from_shop}")
+        except Stock.DoesNotExist:
+            logger.warning(f"No stock record exists for product {product} in source shop {from_shop}")
+            
+        # Increase stock in destination shop with average cost calculation
         try:
             to_stock = Stock.objects.get(shop=to_shop, product=product)
+            
+            # Get the average cost from source shop to calculate proper weighted average
+            try:
+                from_stock = Stock.objects.get(shop=from_shop, product=product)
+                transfer_cost = from_stock.average_cost
+            except Stock.DoesNotExist:
+                # If source doesn't exist, use destination's current cost
+                transfer_cost = to_stock.average_cost
+                logger.warning(f"Using destination's current average cost since source stock not found")
+            
+            # Calculate new average cost using weighted average
+            old_value = to_stock.average_cost * to_stock.quantity
+            transfer_value = transfer_cost * quantity
+            new_total_quantity = to_stock.quantity + quantity
+            
+            if new_total_quantity > 0:
+                to_stock.average_cost = (old_value + transfer_value) / new_total_quantity
+            
             to_stock.quantity += quantity
             to_stock.save()
+            
+            logger.info(f"Increased stock by {quantity} for product {product} in destination shop {to_shop} "
+                       f"with average cost {to_stock.average_cost}")
         except Stock.DoesNotExist:
             # Create new stock record if doesn't exist in destination shop
             try:
                 from_stock = Stock.objects.get(shop=from_shop, product=product)
+                
+                # Create with source shop's average cost and selling price
                 Stock.objects.create(
                     shop=to_shop,
                     product=product,
@@ -370,7 +524,11 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
                     average_cost=from_stock.average_cost,
                     selling_price=from_stock.selling_price
                 )
+                
+                logger.info(f"Created new stock record in destination shop {to_shop} for product {product} "
+                           f"with quantity {quantity} and average cost {from_stock.average_cost}")
             except Stock.DoesNotExist:
+                # Create with default values if source stock doesn't exist
                 Stock.objects.create(
                     shop=to_shop,
                     product=product,
@@ -378,6 +536,9 @@ def update_stock_on_transfer_item_save(sender, instance, created, **kwargs):
                     average_cost=Decimal('0.00'),
                     selling_price=Decimal('0.00')
                 )
+                
+                logger.warning(f"Created new stock record with default values in destination shop {to_shop} "
+                              f"for product {product}")
 
 
 @receiver(post_delete, sender=StockTransferItem)
@@ -388,6 +549,7 @@ def update_stock_on_transfer_item_delete(sender, instance, **kwargs):
     This function:
     1. Returns quantity to the source shop
     2. Reduces quantity from the destination shop
+    3. Maintains average costs appropriately
     """
     with transaction.atomic():
         product = instance.product
@@ -400,15 +562,36 @@ def update_stock_on_transfer_item_delete(sender, instance, **kwargs):
             from_stock = Stock.objects.get(shop=from_shop, product=product)
             from_stock.quantity += quantity
             from_stock.save()
+            
+            logger.info(f"Returned {quantity} units to source shop {from_shop} for product {product} "
+                       f"(transfer item deleted)")
         except Stock.DoesNotExist:
-            pass
+            # Create a new stock record if it doesn't exist
+            Stock.objects.create(
+                shop=from_shop,
+                product=product,
+                quantity=quantity,
+                average_cost=Decimal('0.00'),
+                selling_price=Decimal('0.00')
+            )
+            
+            logger.warning(f"Created new stock record in source shop {from_shop} for product {product} "
+                          f"with returned quantity {quantity} (transfer item deleted)")
             
         # Remove stock from destination shop
         try:
             to_stock = Stock.objects.get(shop=to_shop, product=product)
+            
+            # When removing items from a shop due to deletion, we don't adjust average cost
+            # since we're just undoing a transfer which didn't involve buying at different prices
+            
             to_stock.quantity -= quantity
             if to_stock.quantity < 0:
+                logger.warning(f"Prevented negative stock for product {product} in shop {to_shop}")
                 to_stock.quantity = 0            
             to_stock.save()
+            
+            logger.info(f"Removed {quantity} units from destination shop {to_shop} for product {product} "
+                       f"(transfer item deleted)")
         except Stock.DoesNotExist:
-            pass
+            logger.warning(f"No stock record found for product {product} in destination shop {to_shop}")
