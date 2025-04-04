@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import ValidationError
 
 from accounts.models import Account
-from .base import Customer, Shop, Product
+from entity.models import Customer, Product, Shop
 
 class SalesInvoice(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)

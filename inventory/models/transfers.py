@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms import ValidationError
-from .base import Shop, Product
+
+from entity.models import Product, Shop
 
 class StockTransfer(models.Model):
     from_shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='outgoing_transfers')

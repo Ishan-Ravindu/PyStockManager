@@ -1,4 +1,3 @@
-from .base import Shop, Supplier, Customer, Product
 from .inventory import Stock
 from .purchases import PurchaseInvoice, PurchaseInvoiceItem
 from .transfers import StockTransfer, StockTransferItem

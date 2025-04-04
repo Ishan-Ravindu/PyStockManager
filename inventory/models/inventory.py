@@ -1,5 +1,6 @@
 from django.db import models
-from .base import Shop, Product
+
+from entity.models import Product, Shop
 
 class Stock(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)

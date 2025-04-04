@@ -15,7 +15,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "home",
     "inventory",
-    "accounts"
+    "accounts",
+    "entity",
 ]
 
 MIDDLEWARE = [
@@ -105,11 +106,11 @@ JAZZMIN_SETTINGS = {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
-        "inventory.shop": "fas fa-store",
-        "inventory.product": "fas fa-box",
+        "entity.shop": "fas fa-store",
+        "entity.product": "fas fa-box",
         "inventory.stock": "fas fa-warehouse",
-        "inventory.supplier": "fas fa-truck",
-        "inventory.customer": "fas fa-users",
+        "entity.supplier": "fas fa-truck",
+        "entity.customer": "fas fa-users",
         "inventory.purchaseinvoice": "fas fa-file-invoice-dollar",
         "inventory.salesinvoice": "fas fa-receipt",
         "inventory.stocktransfer": "fas fa-exchange-alt",
