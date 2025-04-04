@@ -87,18 +87,4 @@ class Product(models.Model):
     profit_margin = models.DecimalField(max_digits=5, decimal_places=2, default=10.00)
 
     def __str__(self):
-        return f'{self.name} - Latest selling Price : {self.get_selling_price()}'
-
-    def get_average_cost(self):
-        """Calculate the average cost of all purchase invoices."""
-        from inventory.models.purchases import PurchaseInvoiceItem
-        purchase_items = PurchaseInvoiceItem.objects.filter(product=self)
-        total_cost = sum(item.price * item.quantity for item in purchase_items)
-        total_quantity = sum(item.quantity for item in purchase_items)
-
-        return total_cost / total_quantity if total_quantity > 0 else 0
-
-    def get_selling_price(self):
-        """Calculate the selling price based on the profit margin."""
-        average_cost = self.get_average_cost()
-        return average_cost * (1 + self.profit_margin / 100)
+        return f'{self.name}'

@@ -3,7 +3,7 @@ from ..models import Stock
 
 @admin.register(Stock)
 class StockAdmin(admin.ModelAdmin):
-    list_display = ('shop', 'product', 'quantity')
+    list_display = ('shop', 'product', 'quantity', 'average_cost', 'selling_price')
     list_filter = ('shop', 'product')
     search_fields = ('shop__name', 'product__name')
     list_per_page = 20

@@ -24,16 +24,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'profit_margin', 'average_cost', 'selling_price')
+    list_display = ('name', 'description', 'profit_margin')
     search_fields = ('name', 'description')
     list_filter = ('profit_margin',)
     list_per_page = 20
-
-    def average_cost(self, obj):
-        return obj.get_average_cost()
-    
-    def selling_price(self, obj):
-        return obj.get_selling_price()
-
-    average_cost.short_description = "Avg Cost"
-    selling_price.short_description = "Selling Price"
