@@ -6,6 +6,7 @@ class StockAdmin(admin.ModelAdmin):
     list_display = ('shop', 'product', 'quantity')
     list_filter = ('shop', 'product')
     search_fields = ('shop__name', 'product__name')
+    list_per_page = 20
 
     def get_readonly_fields(self, request, obj=None):
         return ('quantity',)

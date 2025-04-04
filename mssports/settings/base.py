@@ -1,10 +1,8 @@
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Application definition
 INSTALLED_APPS = [
     "jazzmin",
     "django.contrib.admin",
@@ -49,7 +47,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mssports.wsgi.application"
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -99,7 +96,7 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to the MS Sports System",
     
     # Copyright on the footer
-    "copyright": "MS Sports",  
+    "copyright": "MS Sports",
     
     # Custom icons for side menu apps/models
     "icons": {
@@ -118,4 +115,10 @@ JAZZMIN_SETTINGS = {
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "sidebar_fixed": True,
+    "navbar_fixed": True,
+    "footer_fixed": False,
 }

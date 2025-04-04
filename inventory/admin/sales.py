@@ -17,6 +17,7 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'created_at')
     inlines = [SalesInvoiceItemInline]
+    list_per_page = 20
 
     def add_receipt_button(self, obj):
         url = reverse('admin:inventory_receipt_add') + f'?invoice={obj.id}'
@@ -54,6 +55,7 @@ class ReceiptAdmin(admin.ModelAdmin):
     list_display = ('id', 'sales_invoice', 'amount', 'account', 'received_at', 'view_receipt_pdf')
     list_filter = ('account', 'received_at')
     search_fields = ('sales_invoice__customer__name',)
+    list_per_page = 20
     
     def view_receipt_pdf(self, obj):
         if obj.id:

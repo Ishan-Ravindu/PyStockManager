@@ -2,8 +2,6 @@ from django.db import models
 from django.utils.html import format_html
 from django.core.validators import RegexValidator
 
-from inventory.models.purchases import PurchaseInvoiceItem
-
 phone_regex = RegexValidator(
     regex=r'^0\d{9}$',
     message="Phone number must be in the format: '0XXXXXXXXX'. Exactly 10 digits starting with 0."
@@ -93,6 +91,7 @@ class Product(models.Model):
 
     def get_average_cost(self):
         """Calculate the average cost of all purchase invoices."""
+        from inventory.models.purchases import PurchaseInvoiceItem
         purchase_items = PurchaseInvoiceItem.objects.filter(product=self)
         total_cost = sum(item.price * item.quantity for item in purchase_items)
         total_quantity = sum(item.quantity for item in purchase_items)

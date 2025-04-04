@@ -43,6 +43,7 @@ class StockTransferAdmin(admin.ModelAdmin):
     search_fields = ('from_shop__name', 'to_shop__name')
     readonly_fields = ('created_at',)
     inlines = [StockTransferItemInline]
+    list_per_page = 20
 
     save_as = False
     save_on_top = False
