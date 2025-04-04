@@ -60,7 +60,7 @@ class SalesInvoiceItem(models.Model):
 class Receipt(models.Model):
     sales_invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='receipts')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='account')
+    account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='received_payments')
     received_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -70,6 +70,10 @@ class Receipt(models.Model):
         """Validate that amount doesn't exceed the remaining unpaid amount."""
         if self.amount is not None and self.sales_invoice:
             remaining_amount = self.sales_invoice.total_amount - self.sales_invoice.paid_amount
+            if self.pk:
+                original_receipt = Receipt.objects.get(pk=self.pk)
+                remaining_amount += original_receipt.amount  # Add back the original amount
+                
             if self.amount > remaining_amount:
                 raise ValidationError({
                     'amount': f'Receipt amount cannot exceed the remaining unpaid amount of {remaining_amount}.'
@@ -77,13 +81,6 @@ class Receipt(models.Model):
         super().clean()
 
     def save(self, *args, **kwargs):
-        """Update paid amount in SalesInvoice and reduce customer's credit when a receipt is created."""
-        self.full_clean()  # Run validation before saving
+        """Save receipt after validation"""
+        self.full_clean()
         super().save(*args, **kwargs)
-        self.sales_invoice.paid_amount += self.amount
-        self.sales_invoice.save()
-        
-        # Reduce customer's credit
-        if self.sales_invoice.customer:
-            self.sales_invoice.customer.credit -= self.amount
-            self.sales_invoice.customer.save()
