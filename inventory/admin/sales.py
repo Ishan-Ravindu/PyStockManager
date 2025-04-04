@@ -64,20 +64,20 @@ class ReceiptAdmin(admin.ModelAdmin):
         return "-"
     view_receipt_pdf.short_description = 'Receipt PDF'
     
-    # when click Add Receipt need to pre loard invoice in the receipt form
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
+        # Pre-load invoice when adding a new receipt
         if obj is None and 'invoice' in request.GET:
             try:
                 invoice_id = int(request.GET.get('invoice'))
                 form.base_fields['sales_invoice'].initial = invoice_id
             except (ValueError, TypeError):
                 pass
+        # Disable sales_invoice field when editing an existing receipt
+        elif obj is not None:
+            form.base_fields['sales_invoice'].disabled = True
+        # disable the + icon specifically for sales_invoice
+        form.base_fields['sales_invoice'].widget.can_add_related = False
+
         return form
     
-    save_as = False
-    save_on_top = False
-    def has_change_permission(self, request, obj=None):
-        return False 
-    def has_delete_permission(self, request, obj=None):
-        return False

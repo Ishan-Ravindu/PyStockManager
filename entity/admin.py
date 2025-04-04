@@ -20,6 +20,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ('name', 'mobile_number', 'address', 'credit', 'credit_limit', 'credit_period', 'combined_status', 'black_list')
     list_filter = ('credit_period',)
     search_fields = ('name', 'mobile_number')
+    readonly_fields = ('credit',)
     list_per_page = 20
 
 @admin.register(Product)
