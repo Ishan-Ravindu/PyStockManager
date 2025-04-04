@@ -1,0 +1,6 @@
+INFO 2025-04-05 04:26:13,346 autoreload Watching for file changes with StatReloader
+INFO 2025-04-05 04:28:34,251 stock_transfer_signals Updated destination stock for shop Walsh Ltd Store(ST03), product Western Camera, change: 5
+INFO 2025-04-05 04:30:25,458 autoreload /workspaces/mssports/inventory/admin/purchases.py changed, reloading.
+INFO 2025-04-05 04:30:25,813 autoreload Watching for file changes with StatReloader
+INFO 2025-04-05 04:30:32,422 autoreload /workspaces/mssports/inventory/admin/transfers.py changed, reloading.
+INFO 2025-04-05 04:30:32,793 autoreload Watching for file changes with StatReloader

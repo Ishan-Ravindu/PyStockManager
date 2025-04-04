@@ -6,4 +6,7 @@ class InventoryConfig(AppConfig):
     name = "inventory"
 
     def ready(self):
-         from inventory import signals
+        import inventory.signals.receipt_signals
+        import inventory.signals.stock_transfer_signals
+        import inventory.signals.purchase_signals
+        import inventory.signals.sale_signals
