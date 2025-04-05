@@ -1,7 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.shortcuts import redirect
 
 from inventory.models.sales import Receipt
 from ..models import SalesInvoice, SalesInvoiceItem
@@ -35,6 +36,30 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
     readonly_fields = ('total_amount', 'created_at')
     inlines = [SalesInvoiceItemInline, ReceiptInline]
     list_per_page = 20
+    actions = None
+
+    def delete_model(self, request, obj):
+        if obj.receipts.exists():
+            receipt_list = ", ".join([str(receipt.id) for receipt in obj.receipts.all()[:5]])
+            if obj.receipts.count() > 5:
+                receipt_list += f" (and {obj.receipts.count() - 5} more)"
+                
+            messages.error(
+                request,
+                f"Cannot delete Invoice #{obj.id} ({obj.shop.code}) because it has "
+                f"linked receipts: {receipt_list}"
+            )
+            return
+        else:
+            invoice_ref = f"Invoice #{obj.id} ({obj.shop.code})"
+            obj.delete()
+            messages.success(
+                request, 
+                f"{invoice_ref} was deleted successfully"
+            )
+
+    def response_delete(self, request, obj_display, obj_id):
+        return redirect(reverse('admin:inventory_salesinvoice_changelist'))
 
     def add_receipt_button(self, obj):
         url = reverse('admin:inventory_receipt_add') + f'?invoice={obj.id}'
@@ -58,13 +83,6 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
             return format_html('<a class="button" href="{}" target="_blank"><i class="fa fa-file-pdf"></i> View PDF</a>', url)
         return "-"
     view_invoice_pdf.short_description = 'Invoice PDF'
-
-    save_as = False
-    save_on_top = False
-    def has_change_permission(self, request, obj=None):
-        return False 
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 @admin.register(Receipt)

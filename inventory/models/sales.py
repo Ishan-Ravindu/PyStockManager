@@ -19,10 +19,15 @@ class SalesInvoice(models.Model):
         super().clean()
         if self.customer and self.customer.black_list:
             raise ValidationError("Cannot create an invoice for a blacklisted customer.")
-                
+    
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        if self.receipts.exists():
+            raise ValidationError("This invoice cannot be deleted because it has associated receipts.")
+        super().delete(*args, **kwargs)
 
     def update_total_amount(self):
         """Calculate and update total amount from sales invoice items."""
