@@ -37,6 +37,25 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
     inlines = [SalesInvoiceItemInline, ReceiptInline]
     list_per_page = 20
     actions = None
+    
+    def save_model(self, request, obj, form, change):
+        if change and obj.receipts.exists():
+            receipt_list = ", ".join([str(receipt.id) for receipt in obj.receipts.all()[:5]])
+            if obj.receipts.count() > 5:
+                receipt_list += f" (and {obj.receipts.count() - 5} more)"
+                
+            messages.error(
+                request,
+                f"Cannot edit Invoice #{obj.id} ({obj.shop.code}) because it has "
+                f"linked receipts: {receipt_list}"
+            )
+            return
+        super().save_model(request, obj, form, change)
+    
+    def response_change(self, request, obj):
+        if obj.receipts.exists():
+            return redirect(reverse('admin:inventory_salesinvoice_changelist'))
+        return super().response_change(request, obj)
 
     def delete_model(self, request, obj):
         if obj.receipts.exists():
