@@ -1,0 +1,77 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block field_sets %}
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-file-invoice"></i> Invoice Details
+        </h3>
+    </div>
+    
+    <div class="card-body">
+        <!-- Main Fields Section -->
+        <div class="mb-4">
+            <h4 class="section-header">
+                <i class="fas fa-info-circle"></i> Basic Information
+            </h4>
+            <div class="section-divider"></div>
+            {% for fieldset in adminform %}
+                {% include "admin/includes/fieldset.html" %}
+            {% endfor %}
+        </div>
+
+        <!-- Items Section -->
+        <div class="mb-4">
+            <h4 class="section-header">
+                <i class="fas fa-list-ol"></i> Invoice Items
+            </h4>
+            <div class="section-divider"></div>
+            {% with inline_admin_formset=inline_admin_formsets.0 %}
+                {{ inline_admin_formset.management_form }}
+                {% include inline_admin_formset.opts.template %}
+            {% endwith %}
+        </div>
+
+        <!-- Payments Section -->
+        <div class="mb-4">
+            <h4 class="section-header">
+                <i class="fas fa-receipt"></i> Payments
+            </h4>
+            <div class="section-divider"></div>
+            {% with inline_admin_formset=inline_admin_formsets.1 %}
+                {{ inline_admin_formset.management_form }}
+                {% include inline_admin_formset.opts.template %}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .section-header {
+        color: #3c8dbc;
+        padding: 8px 0;
+        margin: 20px 0 10px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 1.1em;
+    }
+    
+    .section-divider {
+        height: 1px;
+        background: linear-gradient(to right, transparent, #ddd, transparent);
+        margin: 5px 0 15px 0;
+    }
+    
+    /* Jazzmin-compatible card styling */
+    .card {
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}
+
+{% block inline_field_sets %}{% endblock %}

@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin, messages
 from django.urls import reverse
 from django.utils.html import format_html
@@ -11,16 +12,17 @@ class SalesInvoiceItemInline(admin.TabularInline):
     model = SalesInvoiceItem
     extra = 1
 
+class ReceiptForm(forms.ModelForm):
+    class Meta:
+        model = Receipt
+        fields = ['amount', 'account']
+        
 class ReceiptInline(admin.TabularInline):
     model = Receipt
-    extra = 0
-    readonly_fields = ('amount', 'account', 'received_at', 'view_receipt_pdf')
-    can_delete = False
-    max_num = 0
+    form = ReceiptForm
+    extra = 1
+    readonly_fields = ('view_receipt_pdf',)
     
-    def has_add_permission(self, request, obj=None):
-        return False
-        
     def view_receipt_pdf(self, obj):
         if obj.id:
             url = reverse('generate_receipt_pdf', args=[obj.id])
@@ -34,9 +36,11 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
     list_filter = ('shop', 'customer', 'created_at')
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'created_at')
+    exclude = ('created_at',)
     inlines = [SalesInvoiceItemInline, ReceiptInline]
     list_per_page = 20
     actions = None
+    change_form_template = 'admin/salesinvoice/change_form_one_tab.html'
     
     def save_model(self, request, obj, form, change):
         if change and obj.receipts.exists():
