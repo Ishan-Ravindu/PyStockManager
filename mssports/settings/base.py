@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from mssports.settings.jazzmin_settings import JAZZMIN_SETTINGS
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -78,51 +79,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Jazzmin Settings
-JAZZMIN_SETTINGS = {
-    # Title on the login screen
-    "site_title": "MS Sports",
-    
-    # Title on the brand (top left)
-    "site_header": "MS Sports",
-    
-    # Title on the browser tab
-    "site_brand": "MS Sports",
-    
-    # CSS classes that are applied to the logo above
-    "site_logo_classes": "img-circle",
-    
-    # Welcome text on the login screen
-    "welcome_sign": "Welcome to the MS Sports System",
-    
-    # Copyright on the footer
-    "copyright": "MS Sports",
-    
-    # Custom icons for side menu apps/models
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
-        "entity.shop": "fas fa-store",
-        "entity.product": "fas fa-box",
-        "inventory.stock": "fas fa-warehouse",
-        "entity.supplier": "fas fa-truck",
-        "entity.customer": "fas fa-users",
-        "inventory.purchaseinvoice": "fas fa-file-invoice-dollar",
-        "inventory.salesinvoice": "fas fa-receipt",
-        "inventory.stocktransfer": "fas fa-exchange-alt",
-    },
-    # Icons that are used when one is not manually specified
-    "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
-}
-
-JAZZMIN_UI_TWEAKS = {
-    "sidebar_fixed": True,
-    "navbar_fixed": True,
-    "footer_fixed": False,
-}
 
 LOGGING = {
     'version': 1,
