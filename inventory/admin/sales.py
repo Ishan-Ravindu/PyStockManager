@@ -8,18 +8,12 @@ from django.shortcuts import redirect
 from inventory.models.sales import Receipt
 from ..models import SalesInvoice, SalesInvoiceItem
 
-class SalesInvoiceItemInline(admin.TabularInline):
+class SalesInvoiceItemInline(admin.StackedInline):
     model = SalesInvoiceItem
     extra = 1
-
-class ReceiptForm(forms.ModelForm):
-    class Meta:
-        model = Receipt
-        fields = ['amount', 'account']
         
-class ReceiptInline(admin.TabularInline):
+class ReceiptInline(admin.StackedInline):
     model = Receipt
-    form = ReceiptForm
     extra = 1
     readonly_fields = ('view_receipt_pdf',)
     
@@ -40,8 +34,7 @@ class SalesInvoiceAdmin(admin.ModelAdmin):
     inlines = [SalesInvoiceItemInline, ReceiptInline]
     list_per_page = 20
     actions = None
-    change_form_template = 'admin/salesinvoice/change_form_one_tab.html'
-    
+   
     def save_model(self, request, obj, form, change):
         if change and obj.receipts.exists():
             receipt_list = ", ".join([str(receipt.id) for receipt in obj.receipts.all()[:5]])

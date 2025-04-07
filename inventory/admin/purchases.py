@@ -1,7 +1,7 @@
 from django.contrib import admin
 from ..models import PurchaseInvoice, PurchaseInvoiceItem
 
-class PurchaseInvoiceItemInline(admin.TabularInline):
+class PurchaseInvoiceItemInline(admin.StackedInline):
     model = PurchaseInvoiceItem
     extra = 1
 
