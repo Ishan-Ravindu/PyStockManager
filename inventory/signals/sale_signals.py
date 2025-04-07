@@ -40,6 +40,8 @@ def handle_invoice_customer_change(sender, instance, created, **kwargs):
         if instance.customer:
             with transaction.atomic():
                 due_amount = instance.total_amount - instance.paid_amount
+                if isinstance(due_amount, float):
+                    due_amount = Decimal(str(due_amount))
                 instance.customer.credit += due_amount
                 instance.customer.save(update_fields=['credit'])
                 logger.info(f"Updated credit for new customer {instance.customer}: increased by {due_amount}")
