@@ -1,5 +1,4 @@
 from django.db import models
-from django.forms import ValidationError
 
 from accounts.models import Account
 from entity.models import Customer, Product, Shop
@@ -15,25 +14,11 @@ class SalesInvoice(models.Model):
     def __str__(self):
         return f"{self.shop.code}#{self.id} - ({self.paid_amount}/{self.total_amount})"
     
-    def clean(self):
-        super().clean()
-        if self.customer and self.customer.black_list:
-            raise ValidationError("Cannot create an invoice for a blacklisted customer.")
-    
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-    
-    def delete(self, *args, **kwargs):
-        if self.receipts.exists():
-            raise ValidationError("This invoice cannot be deleted because it has associated receipts.")
-        super().delete(*args, **kwargs)
-
     def update_total_amount(self):
         """Calculate and update total amount from sales invoice items."""
         total = sum(item.price * item.quantity for item in self.items.all())
         self.total_amount = total
-        self.save()
+        self.save(update_fields=['total_amount'])
     
     def get_due_amount(self):
         """Calculate remaining due amount."""
@@ -70,22 +55,3 @@ class Receipt(models.Model):
 
     def __str__(self):
         return f"Receipt {self.id} for Sales {self.sales_invoice.id}"
-        
-    def clean(self):
-        """Validate that amount doesn't exceed the remaining unpaid amount."""
-        if self.amount is not None and self.sales_invoice:
-            remaining_amount = self.sales_invoice.total_amount - self.sales_invoice.paid_amount
-            if self.pk:
-                original_receipt = Receipt.objects.get(pk=self.pk)
-                remaining_amount += original_receipt.amount  # Add back the original amount
-                
-            if self.amount > remaining_amount:
-                raise ValidationError({
-                    'amount': f'Receipt amount cannot exceed the remaining unpaid amount of {remaining_amount}.'
-                })
-        super().clean()
-
-    def save(self, *args, **kwargs):
-        """Save receipt after validation"""
-        self.full_clean()
-        super().save(*args, **kwargs)
