@@ -4,8 +4,8 @@ from django.dispatch import receiver
 from django.db import transaction
 import logging
 
-from inventory.models.inventory import Stock
-from inventory.models.transfers import StockTransfer, StockTransferItem
+from inventory.models.stock import Stock
+from inventory.models.stock_transfers import StockTransfer, StockTransferItem
 
 # Set up logger
 logger = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from inventory.models.inventory import Stock
+from inventory.models.stock import Stock
 
 class StockSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)

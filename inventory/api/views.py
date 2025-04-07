@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from inventory.api.serializers import StockSerializer
-from inventory.models.inventory import Stock
+from inventory.models.stock import Stock
 
 class StockAPI(APIView):
     """

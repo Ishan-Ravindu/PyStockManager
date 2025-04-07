@@ -5,7 +5,7 @@ from django.db import transaction
 from django.conf import settings
 import logging
 
-from inventory.models.inventory import Stock
+from inventory.models.stock import Stock
 from inventory.models.purchases import PurchaseInvoice, PurchaseInvoiceItem
 
 # Set up logger

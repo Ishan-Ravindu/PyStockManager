@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.db import transaction
 import logging
 
-from inventory.models.inventory import Stock
+from inventory.models.stock import Stock
 from inventory.models.sales import SalesInvoice, SalesInvoiceItem
 
 # Set up logger

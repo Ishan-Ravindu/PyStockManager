@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from django.db.models import Sum, F
 from django.contrib.admin import SimpleListFilter
 
-from inventory.models.inventory import Stock
+from inventory.models.stock import Stock
 
 class QuantityRangeFilter(SimpleListFilter):
     title = 'quantity range'

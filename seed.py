@@ -22,9 +22,9 @@ from faker import Faker
 # Now it's safe to import models
 from entity.models import Shop, Supplier, Customer, Product
 from accounts.models import Account, Withdraw, AccountTransfer
-from inventory.models.inventory import Stock
+from inventory.models.stock import Stock
 from inventory.models.purchases import PurchaseInvoice, PurchaseInvoiceItem
-from inventory.models.transfers import StockTransfer, StockTransferItem
+from inventory.models.stock_transfers import StockTransfer, StockTransferItem
 from inventory.models.sales import Receipt, SalesInvoice, SalesInvoiceItem
 
 fake = Faker()

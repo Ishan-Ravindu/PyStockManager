@@ -1,4 +1,4 @@
-from .inventory import Stock
+from .stock import Stock
 from .purchases import PurchaseInvoice, PurchaseInvoiceItem
-from .transfers import StockTransfer, StockTransferItem
+from .stock_transfers import StockTransfer, StockTransferItem
 from .sales import SalesInvoice, SalesInvoiceItem

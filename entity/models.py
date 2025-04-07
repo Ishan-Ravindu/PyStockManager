@@ -1,11 +1,6 @@
 from django.db import models
 from django.utils.html import format_html
-from django.core.validators import RegexValidator
-
-phone_regex = RegexValidator(
-    regex=r'^0\d{9}$',
-    message="Phone number must be in the format: '0XXXXXXXXX'. Exactly 10 digits starting with 0."
-)
+from utils import phone_regex
 
 class Shop(models.Model):
     name = models.CharField(max_length=255)
