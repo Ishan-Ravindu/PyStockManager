@@ -6,7 +6,8 @@ from django.conf import settings
 import logging
 
 from inventory.models.stock import Stock
-from inventory.models.purchases import PurchaseInvoice, PurchaseInvoiceItem
+from purchase_invoice.models import PurchaseInvoice, PurchaseInvoiceItem
+
 
 # Set up logger
 logger = logging.getLogger(__name__)

@@ -7,5 +7,4 @@ class InventoryConfig(AppConfig):
 
     def ready(self):
         import inventory.signals.stock_transfer_signals
-        import inventory.signals.purchase_signals
         import inventory.signals.sale_signals
