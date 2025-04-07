@@ -1,11 +1,3 @@
-"""
-Refactored admin interface for Sales Invoice and Receipt management.
-This code separates concerns by using:
-1. Custom form classes for validation
-2. Service layer for business logic
-3. Mixins for common functionality
-4. Validators for reusable validation logic
-"""
 from django import forms
 from django.contrib import admin, messages
 from django.urls import reverse
@@ -17,7 +9,6 @@ from django.utils import timezone
 from django.db.models import Exists, OuterRef, Sum, F
 from django.forms.models import BaseInlineFormSet
 
-from inventory.models.sales import Receipt
 from ..models import SalesInvoice, SalesInvoiceItem
 
 
@@ -91,24 +82,6 @@ class InvoiceValidator:
                 f"Cannot edit Invoice #{invoice.id} ({invoice.shop.code}) because it has "
                 f"linked receipts: {receipt_list}"
             )
-
-
-class ReceiptValidator:
-    """Validator class for receipt-related validations"""
-    
-    @staticmethod
-    def validate_amount(amount, sales_invoice, original_amount=0):
-        """Validate that receipt amount doesn't exceed remaining unpaid amount"""
-        if not all([amount is not None, sales_invoice]):
-            return
-            
-        remaining_amount = sales_invoice.total_amount - sales_invoice.paid_amount + original_amount
-                
-        if amount > remaining_amount:
-            raise ValidationError(
-                f"Receipt amount cannot exceed the remaining unpaid amount of {remaining_amount}."
-            )
-
 
 # ========== Service Layer ==========
 
@@ -219,34 +192,6 @@ class SalesInvoiceItemFormSet(BaseInlineFormSet):
         if obj not in self.deleted_objects:
             self.deleted_objects.append(obj)
         super().save_deleted(obj)
-
-
-class ReceiptForm(forms.ModelForm):
-    """Custom form for receipts with amount validation"""
-    
-    class Meta:
-        model = Receipt
-        fields = '__all__'
-    
-    def clean(self):
-        cleaned_data = super().clean()
-        amount = cleaned_data.get('amount')
-        sales_invoice = cleaned_data.get('sales_invoice')
-        
-        # Get original amount if editing existing receipt
-        original_amount = 0
-        if self.instance and self.instance.pk:
-            original_amount = self.instance.amount
-        
-        # Validate receipt amount
-        if amount is not None and sales_invoice:
-            try:
-                ReceiptValidator.validate_amount(amount, sales_invoice, original_amount)
-            except ValidationError as e:
-                self.add_error('amount', e)
-        
-        return cleaned_data
-
 
 class SalesInvoiceForm(forms.ModelForm):
     """Custom form for sales invoices with customer and due date validation"""
@@ -411,7 +356,7 @@ class SalesInvoiceAdmin(admin.ModelAdmin, PDFViewMixin, MessageMixin):
 
     def add_receipt_button(self, obj):
         """Generate button for adding new receipt"""
-        url = reverse('admin:inventory_receipt_add') + f'?invoice={obj.id}'
+        url = reverse('admin:receipt_receipt_add') + f'?invoice={obj.id}'
         return format_html('<a class="button" href="{}">Add Receipt</a>', url)
     add_receipt_button.short_description = 'Add Receipt'
 
@@ -423,7 +368,7 @@ class SalesInvoiceAdmin(admin.ModelAdmin, PDFViewMixin, MessageMixin):
         
         links = []
         for receipt in receipts:
-            url = reverse('admin:inventory_receipt_change', args=[receipt.id])
+            url = reverse('admin:receipt_receipt_change', args=[receipt.id])
             links.append(f'<a href="{url}">{receipt.id}({receipt.amount})</a>')        
         
         return mark_safe(', '.join(links))
@@ -433,39 +378,3 @@ class SalesInvoiceAdmin(admin.ModelAdmin, PDFViewMixin, MessageMixin):
         """Generate PDF view button for invoice"""
         return self.get_pdf_button(obj, 'generate_invoice_pdf')
     view_invoice_pdf.short_description = 'Invoice PDF'
-
-
-@admin.register(Receipt)
-class ReceiptAdmin(admin.ModelAdmin, PDFViewMixin):
-    """Admin interface for receipts"""
-    form = ReceiptForm
-    list_display = ('id', 'sales_invoice', 'amount', 'account', 'received_at', 'view_receipt_pdf')
-    list_filter = ('account', 'received_at')
-    search_fields = ('sales_invoice__customer__name',)
-    list_per_page = 20
-    
-    def get_form(self, request, obj=None, **kwargs):
-        """Custom form handling for receipts"""
-        form = super().get_form(request, obj, **kwargs)
-        
-        # Pre-load invoice when adding a new receipt
-        if obj is None and 'invoice' in request.GET:
-            try:
-                invoice_id = int(request.GET.get('invoice'))
-                form.base_fields['sales_invoice'].initial = invoice_id
-            except (ValueError, TypeError):
-                pass
-                
-        # Disable sales_invoice field when editing an existing receipt
-        elif obj is not None:
-            form.base_fields['sales_invoice'].disabled = True
-            
-        # Disable the + icon specifically for sales_invoice
-        form.base_fields['sales_invoice'].widget.can_add_related = False
-        
-        return form
-    
-    def view_receipt_pdf(self, obj):
-        """Generate PDF view button for receipt"""
-        return self.get_pdf_button(obj, 'generate_receipt_pdf')
-    view_receipt_pdf.short_description = 'Receipt PDF'

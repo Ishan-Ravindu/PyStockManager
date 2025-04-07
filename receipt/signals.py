@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.db import transaction
 import logging
 
-from inventory.models.sales import Receipt
+from receipt.models import Receipt
 
 # Set up logger
 logger = logging.getLogger(__name__)

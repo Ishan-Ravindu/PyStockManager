@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     "inventory",
     "accounts",
     "entity",
+    "receipt",
 ]
 
 MIDDLEWARE = [
