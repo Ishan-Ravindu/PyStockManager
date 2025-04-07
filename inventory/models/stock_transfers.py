@@ -1,11 +1,9 @@
 from django.db import models
 from django.forms import ValidationError
 
-from entity.models import Product, Shop
-
 class StockTransfer(models.Model):
-    from_shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='outgoing_transfers')
-    to_shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='incoming_transfers')
+    from_shop = models.ForeignKey('entity.Shop', on_delete=models.CASCADE, related_name='outgoing_transfers')
+    to_shop = models.ForeignKey('entity.Product', on_delete=models.CASCADE, related_name='incoming_transfers')
     description = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -19,5 +17,5 @@ class StockTransfer(models.Model):
 
 class StockTransferItem(models.Model):
     stock_transfer = models.ForeignKey(StockTransfer, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey('entity.Product', on_delete=models.CASCADE)
     quantity = models.IntegerField()

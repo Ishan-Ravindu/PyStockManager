@@ -8,10 +8,10 @@ class PurchaseInvoiceItemInline(admin.StackedInline):
 
 @admin.register(PurchaseInvoice)
 class PurchaseInvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'supplier', 'shop', 'total_amount', 'created_at')
+    list_display = ('id', 'supplier', 'shop', 'total_amount', 'paid_amount', 'created_at')
     list_filter = ('supplier', 'shop', 'created_at')
     search_fields = ('supplier__name', 'shop__name')
-    readonly_fields = ('total_amount', 'created_at')
+    readonly_fields = ('total_amount', 'paid_amount', 'created_at')
     inlines = [PurchaseInvoiceItemInline]
     list_per_page = 20
 
