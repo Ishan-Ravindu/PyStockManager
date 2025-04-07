@@ -7,7 +7,7 @@ import logging
 
 from inventory.models.stock import Stock
 from purchase_invoice.models import PurchaseInvoice, PurchaseInvoiceItem
-
+from entity.models import Supplier
 
 # Set up logger
 logger = logging.getLogger(__name__)
@@ -16,19 +16,27 @@ logger = logging.getLogger(__name__)
 DEFAULT_MARKUP_PERCENTAGE = getattr(settings, 'DEFAULT_MARKUP_PERCENTAGE', Decimal('0.20'))
 
 
+#########################################
+# Purchase Invoice Stock Signal Handlers #
+#########################################
+
 @receiver(pre_save, sender=PurchaseInvoice)
 def store_original_invoice_data(sender, instance, **kwargs):
     """
-    Store the original shop values before a PurchaseInvoice is updated.
+    Store the original shop and supplier values before a PurchaseInvoice is updated.
     
-    This is necessary to correctly handle stock adjustments when the invoice's
-    shop is changed.
+    This is necessary to correctly handle stock and payable adjustments when the invoice's
+    shop or supplier is changed.
     """
     if instance.pk:
         try:
             original = PurchaseInvoice.objects.get(pk=instance.pk)
             instance._original_shop = original.shop
-            logger.debug(f"Stored original shop {original.shop} for purchase invoice {instance.pk}")
+            instance._original_supplier = original.supplier
+            instance._original_total_amount = original.total_amount
+            logger.debug(f"Stored original data for purchase invoice {instance.pk}: "
+                        f"shop={original.shop}, supplier={original.supplier}, "
+                        f"total_amount={original.total_amount}")
         except PurchaseInvoice.DoesNotExist:
             logger.warning(f"Could not find original purchase invoice with ID {instance.pk}")
             pass
@@ -134,6 +142,122 @@ def handle_invoice_shop_changes(sender, instance, created, **kwargs):
                 logger.info(f"Created new stock record in new shop with "
                            f"quantity: {item.quantity}, average cost: {item.price}")
 
+
+#############################################
+# Purchase Invoice Supplier Payable Signals #
+#############################################
+
+@receiver(post_save, sender=PurchaseInvoice)
+def update_supplier_payable_on_invoice_save(sender, instance, created, **kwargs):
+    """
+    Update supplier payable balance when a purchase invoice is created or updated.
+    
+    For new invoices:
+    - Add total amount to supplier's payable balance
+    
+    For updated invoices:
+    - Handle supplier changes or amount changes
+    - Adjust payable balances accordingly
+    """
+    if not hasattr(instance, 'supplier') or instance.supplier is None:
+        logger.warning(f"Invoice {instance.pk} has no supplier, skipping payable update")
+        return
+
+    with transaction.atomic():
+        if created:
+            # For new invoices, simply increase the supplier's payable balance
+            try:
+                supplier = instance.supplier
+                # Convert to Decimal to ensure compatible types
+                supplier.payable += Decimal(str(instance.total_amount))
+                supplier.save()
+                
+                logger.info(f"Added {instance.total_amount} to supplier {supplier.pk} payable balance. "
+                           f"New balance: {supplier.payable}")
+            except Exception as e:
+                logger.error(f"Error updating supplier payable on new invoice: {str(e)}")
+                raise  # Re-raise to ensure transaction rollback
+                
+        else:
+            # Handle updates to existing invoices
+            if not hasattr(instance, '_original_supplier') or not hasattr(instance, '_original_total_amount'):
+                logger.warning(f"Missing original data for invoice {instance.pk}, skipping payable update")
+                return
+                
+            # Check if supplier changed
+            supplier_changed = instance._original_supplier != instance.supplier
+            
+            # Check if total amount changed
+            amount_changed = instance._original_total_amount != instance.total_amount
+            
+            if supplier_changed:
+                # Need to remove amount from old supplier and add to new supplier
+                try:
+                    # Remove from old supplier
+                    if instance._original_supplier:
+                        old_supplier = instance._original_supplier
+                        old_supplier.payable -= Decimal(str(instance._original_total_amount))
+                        old_supplier.save()
+                        
+                        logger.info(f"Removed {instance._original_total_amount} from original supplier "
+                                   f"{old_supplier.pk} payable. New balance: {old_supplier.payable}")
+                    
+                    # Add to new supplier
+                    if instance.supplier:
+                        new_supplier = instance.supplier
+                        new_supplier.payable += Decimal(str(instance.total_amount))
+                        new_supplier.save()
+                        
+                        logger.info(f"Added {instance.total_amount} to new supplier {new_supplier.pk} payable. "
+                                   f"New balance: {new_supplier.payable}")
+                               
+                except Exception as e:
+                    logger.error(f"Error updating supplier payable on supplier change: {str(e)}")
+                    raise  # Re-raise to ensure transaction rollback
+            
+            elif amount_changed:
+                # Just need to adjust the existing supplier's balance by the difference
+                try:
+                    supplier = instance.supplier
+                    
+                    # Calculate difference and adjust
+                    amount_difference = Decimal(str(instance.total_amount)) - Decimal(str(instance._original_total_amount))
+                    supplier.payable += amount_difference
+                    supplier.save()
+                    
+                    logger.info(f"Adjusted supplier {supplier.pk} payable by {amount_difference}. "
+                               f"New balance: {supplier.payable}")
+                except Exception as e:
+                    logger.error(f"Error updating supplier payable on amount change: {str(e)}")
+                    raise  # Re-raise to ensure transaction rollback
+
+
+@receiver(post_delete, sender=PurchaseInvoice)
+def update_supplier_payable_on_invoice_delete(sender, instance, **kwargs):
+    """
+    When a purchase invoice is deleted, reduce the supplier's payable balance accordingly.
+    """
+    if not hasattr(instance, 'supplier') or instance.supplier is None:
+        logger.warning(f"Deleted invoice had no supplier, skipping payable update")
+        return
+        
+    supplier = instance.supplier
+    
+    with transaction.atomic():
+        try:
+            supplier.payable -= Decimal(str(instance.total_amount))
+            supplier.save()
+                
+            logger.info(f"Reduced supplier {supplier.pk} payable by {instance.total_amount} due to invoice deletion. "
+                       f"New balance: {supplier.payable}")
+        except Exception as e:
+            logger.error(f"Error updating supplier payable on invoice deletion: {str(e)}")
+            raise  # Re-raise to ensure transaction rollback
+
+
+###########################################
+# Purchase Invoice Item Signal Handlers   #
+###########################################
 
 @receiver(pre_save, sender=PurchaseInvoiceItem)
 def store_original_item_data(sender, instance, **kwargs):
