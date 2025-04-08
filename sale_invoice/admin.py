@@ -6,11 +6,9 @@ from django.utils.safestring import mark_safe
 from django.shortcuts import redirect
 from django.forms import ValidationError
 from django.utils import timezone
-from django.db.models import Exists, OuterRef, Sum, F
 from django.forms.models import BaseInlineFormSet
 
-from ..models import SalesInvoice, SalesInvoiceItem
-
+from sale_invoice.models import SalesInvoice, SalesInvoiceItem
 
 # ========== Validators ==========
 

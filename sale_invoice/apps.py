@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class InventoryConfig(AppConfig):
+class SaleInvoiceConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "inventory"
+    name = "sale_invoice"
 
     def ready(self):
-        import inventory.signals.stock_transfer_signals
+        import sale_invoice.signals

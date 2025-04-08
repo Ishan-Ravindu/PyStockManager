@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "receipt",
     "purchase_invoice",
     "payment",
+    "sale_invoice",
 ]
 
 MIDDLEWARE = [

@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 
 from utils import render_to_pdf
 from .models import SalesInvoice

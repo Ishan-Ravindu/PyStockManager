@@ -1,6 +1,6 @@
 from django.db import models
 
-from inventory.models.sales import SalesInvoice
+from sale_invoice.models import SalesInvoice
 
 class Receipt(models.Model):
     sales_invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='receipts')
