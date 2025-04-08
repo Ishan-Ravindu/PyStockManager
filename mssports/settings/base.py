@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from mssports.settings.jazzmin_settings import JAZZMIN_SETTINGS
+from mssports.settings.jazzmin_settings import JAZZMIN_SETTINGS, JAZZMIN_UI_TWEAKS
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
