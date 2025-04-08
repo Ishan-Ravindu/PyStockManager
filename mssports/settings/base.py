@@ -15,13 +15,15 @@ INSTALLED_APPS = [
     "rest_framework",
     "home",
     "inventory",
-    "accounts",
-    "entity",
+    "account",
     "receipt",
     "purchase_invoice",
     "payment",
     "sale_invoice",
     "shop",
+    "supplier",
+    "product",
+    "customer",
 ]
 
 MIDDLEWARE = [

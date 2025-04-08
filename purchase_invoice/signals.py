@@ -7,7 +7,6 @@ import logging
 
 from inventory.models.stock import Stock
 from purchase_invoice.models import PurchaseInvoice, PurchaseInvoiceItem
-from entity.models import Supplier
 
 # Set up logger
 logger = logging.getLogger(__name__)

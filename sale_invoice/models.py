@@ -1,7 +1,7 @@
 from django.db import models
 
 class SalesInvoice(models.Model):
-    customer = models.ForeignKey('entity.Customer', on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey('customer.Customer', on_delete=models.SET_NULL, null=True)
     shop = models.ForeignKey('shop.Shop', on_delete=models.CASCADE)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, editable=False)
     paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, editable=False)
@@ -37,7 +37,7 @@ class SalesInvoice(models.Model):
 
 class SalesInvoiceItem(models.Model):
     sales_invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey('entity.Product', on_delete=models.CASCADE)
+    product = models.ForeignKey('product.Product', on_delete=models.CASCADE)
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     

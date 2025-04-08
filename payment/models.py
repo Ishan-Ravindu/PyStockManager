@@ -5,7 +5,7 @@ from purchase_invoice.models import PurchaseInvoice
 class Payment(models.Model):
     purchase_invoice = models.ForeignKey(PurchaseInvoice, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='payed_payments')
+    account = models.ForeignKey('account.Account', on_delete=models.CASCADE, related_name='payed_payments')
     payment_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
