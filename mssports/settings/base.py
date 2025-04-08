@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "purchase_invoice",
     "payment",
     "sale_invoice",
+    "shop",
 ]
 
 MIDDLEWARE = [

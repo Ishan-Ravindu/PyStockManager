@@ -101,7 +101,7 @@ JAZZMIN_SETTINGS = {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
-        "entity.shop": "fas fa-store",
+        "shop.shop": "fas fa-store",
         "entity.product": "fas fa-box",
         "inventory.stock": "fas fa-warehouse",
         "entity.supplier": "fas fa-truck",

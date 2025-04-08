@@ -2,15 +2,6 @@ from django.db import models
 from django.utils.html import format_html
 from utils import phone_regex
 
-class Shop(models.Model):
-    name = models.CharField(max_length=255)
-    code = models.CharField(max_length=255)
-    location = models.TextField()
-    is_warehouse = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.code}"
-
 class Supplier(models.Model):
     name = models.CharField(max_length=255)
     mobile_number = models.CharField(validators=[phone_regex], max_length=10)

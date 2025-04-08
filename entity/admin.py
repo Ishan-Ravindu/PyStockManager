@@ -2,14 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from entity.models import Category, Customer, Product, Shop, Supplier
-
-@admin.register(Shop)
-class ShopAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code', 'location', 'is_warehouse')
-    list_filter = ('is_warehouse',)
-    search_fields = ('name', 'location')
-    list_per_page = 20
+from entity.models import Category, Customer, Product, Supplier
 
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):

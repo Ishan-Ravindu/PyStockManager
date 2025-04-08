@@ -1,10 +1,8 @@
 from django.db import models
 
-from accounts.models import Account
-
 class SalesInvoice(models.Model):
     customer = models.ForeignKey('entity.Customer', on_delete=models.SET_NULL, null=True)
-    shop = models.ForeignKey('entity.Shop', on_delete=models.CASCADE)
+    shop = models.ForeignKey('shop.Shop', on_delete=models.CASCADE)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, editable=False)
     paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, editable=False)
     due_date = models.DateField()

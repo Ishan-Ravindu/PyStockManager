@@ -2,7 +2,7 @@ from django.db import models
 
 class PurchaseInvoice(models.Model):
     supplier = models.ForeignKey('entity.Supplier', on_delete=models.SET_NULL, null=True)
-    shop = models.ForeignKey('entity.Shop', on_delete=models.CASCADE)  # Warehouse
+    shop = models.ForeignKey('shop.Shop', on_delete=models.CASCADE)  # Warehouse
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, editable=False)
     paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
