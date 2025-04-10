@@ -6,7 +6,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 INSTALLED_APPS = [
     "core",
+    "dashboard",
     "jazzmin",
+    # keep above in same order
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -24,7 +26,7 @@ INSTALLED_APPS = [
     "shop",
     "supplier",
     "product",
-    "customer",
+    "customer"
 ]
 
 MIDDLEWARE = [
