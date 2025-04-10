@@ -10,7 +10,23 @@ JAZZMIN_SETTINGS = {
     "show_ui_builder": False,
     "related_modal_active": False,
     "changeform_format": "single",
+    "navigation_expanded":True,
     "hide_apps": [],
+    "order_with_respect_to": [
+        "account",
+        "account.account",
+        "auth",
+        "inventory",
+        "inventory.stock",
+        "shop",
+        "product",
+        "supplier",
+        "customer",
+        "purchase_invoice",
+        "payment",  
+        "sale_invoice",
+        "receipt,"
+        ],
     "icons": {
         "auth.user": "fas fa-user",
         "auth.group": "fas fa-users",
