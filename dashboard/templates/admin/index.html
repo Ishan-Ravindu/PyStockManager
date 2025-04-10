@@ -13,10 +13,37 @@
     </ol>
 {% endblock %}
 
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        axios.get('/api/purchase_invoice/total-payable/')
+            .then(function(response) {
+                document.getElementById('total-payable').innerText = 'Rs. ' + parseFloat(response.data.total_payable).toFixed(2);
+            })
+            .catch(function(error) {
+                console.error('Error fetching total payable:', error);
+            });
+        axios.get('/api/sale_invoice/total-receivables/')
+            .then(function(response) {
+                document.getElementById('total-receivables').innerText = 'Rs. ' + parseFloat(response.data.total_receivables).toFixed(2);
+            })
+            .catch(function(error) {
+                console.error('Error fetching total receivables:', error);
+            });
+        axios.get('/api/account/total-balance/')
+            .then(function(response) {
+                document.getElementById('total-balance').innerText = 'Rs. ' + parseFloat(response.data.total_balance).toFixed(2);
+            })
+            .catch(function(error) {
+                console.error('Error fetching total balance:', error);
+            });
+    });
+</script>
+{% endblock %}
 
 {% block content %}
-    <!-- Dashboard stats only, no app models -->
-
     <div class="col-lg-9 col-12">
         <div class="row">
             <div class="col-md-6 col-sm-12">
@@ -29,11 +56,7 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <h2 class="lead"><b>$26,300.00</b></h2>
-                        <p class="text-sm">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>12% increase</span> since last month
-                        </p>
+                        <h2 class="lead"><b id="total-payable">Loading...</b></h2>                        
                     </div>
                 </div>
                 
@@ -45,69 +68,25 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <h2 class="lead"><b>$54,750.00</b></h2>
-                        <p class="text-sm">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>25% increase</span> since last month
-                        </p>
+                        <h2 class="lead"><b id="total-receivables">Loading...</b></h2>
                     </div>
                 </div>
-                
-                <div class="card bg-gradient-info mb-4">
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <!-- Right column dashboard cards -->
+                <div class="card bg-gradient-primary mb-4">
                     <div class="card-header">
                         <h5 class="m-0">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            Today Sales
+                            <i class="fas fa-university mr-2"></i>
+                            Total Account Balances
                         </h5>
                     </div>
                     <div class="card-body">
-                        <h2 class="lead"><b>$8,450.00</b></h2>
-                        <p class="text-sm">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>32 orders</span> processed today
-                        </p>
+                        <h2 class="lead"><b id="total-balance">Loading...</b></h2>
                     </div>
                 </div>
-                
-                <!-- Left column is already populated with the first 3 cards -->
-                
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <!-- Right column dashboard cards -->
-                    <div class="card bg-gradient-primary mb-4">
-                        <div class="card-header">
-                            <h5 class="m-0">
-                                <i class="fas fa-university mr-2"></i>
-                                Total Account Balances
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <h2 class="lead"><b>$138,520.00</b></h2>
-                            <p class="text-sm">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>5% increase</span> since last month
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="card bg-gradient-warning mb-4">
-                        <div class="card-header">
-                            <h5 class="m-0">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                Low Stock Products
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <h2 class="lead"><b>24 products</b></h2>
-                            <p class="text-sm">
-                                <span>5 critical</span> items need immediate reorder
-                            </p>
-                            <a href="#" class="text-sm">View all <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
+            </div>
         </div>
-
     </div>
     <div class="col-lg-3 col-12">
         <div id="content-related">
@@ -171,5 +150,4 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
