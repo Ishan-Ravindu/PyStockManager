@@ -1,4 +1,5 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from purchase_invoice.models import PurchaseInvoice, PurchaseInvoiceItem
 
@@ -7,7 +8,7 @@ class PurchaseInvoiceItemInline(admin.StackedInline):
     extra = 1
 
 @admin.register(PurchaseInvoice)
-class PurchaseInvoiceAdmin(admin.ModelAdmin):
+class PurchaseInvoiceAdmin(SimpleHistoryAdmin):
     list_display = ('id', 'supplier', 'shop', 'total_amount', 'paid_amount', 'created_at')
     list_filter = ('supplier', 'shop', 'created_at')
     search_fields = ('supplier__name', 'shop__name')

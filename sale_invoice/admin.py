@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.forms import ValidationError
 from django.utils import timezone
 from django.forms.models import BaseInlineFormSet
+from simple_history.admin import SimpleHistoryAdmin
 
 from sale_invoice.models import SalesInvoice, SalesInvoiceItem
 
@@ -273,7 +274,7 @@ class SalesInvoiceItemInline(admin.StackedInline):
 # ========== Admin Classes ==========
 
 @admin.register(SalesInvoice)
-class SalesInvoiceAdmin(admin.ModelAdmin, PDFViewMixin, MessageMixin):
+class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin):
     """Admin interface for sales invoices"""
     form = SalesInvoiceForm
     list_display = ('id', 'shop', 'customer', 'total_amount', 'paid_amount', 'created_at', 

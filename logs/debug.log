@@ -4903,3 +4903,100 @@ Traceback (most recent call last):
     raise self.error(
 django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 107: 'endif', expected 'endblock'. Did you forget to register or load this tag?
 WARNING 2025-04-10 14:13:49,897 log Not Found: /favicon.ico
+INFO 2025-04-10 14:33:56,797 autoreload /workspaces/mssports/mssports/urls.py changed, reloading.
+INFO 2025-04-10 14:33:57,447 autoreload Watching for file changes with StatReloader
+WARNING 2025-04-10 14:34:08,527 log Not Found: /api/
+WARNING 2025-04-10 14:36:37,013 log Not Found: /api/inventory/
+WARNING 2025-04-10 14:36:45,946 log Bad Request: /api/inventory/stock/
+INFO 2025-04-10 14:48:51,235 autoreload /workspaces/mssports/purchase_invoice/views.py changed, reloading.
+INFO 2025-04-10 14:48:51,895 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 14:49:35,975 autoreload /workspaces/mssports/mssports/urls.py changed, reloading.
+INFO 2025-04-10 14:49:36,622 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 14:49:47,009 autoreload /workspaces/mssports/mssports/urls.py changed, reloading.
+INFO 2025-04-10 14:49:47,629 autoreload Watching for file changes with StatReloader
+WARNING 2025-04-10 14:50:38,068 log Not Found: /api/purchase_invoice/
+INFO 2025-04-10 14:53:00,972 signals Added 0.0 to supplier 1 payable balance. New balance: 170.00
+INFO 2025-04-10 14:53:00,973 signals Creating new purchase invoice item for product tes at shop test2
+INFO 2025-04-10 14:53:00,974 signals Updated existing stock for product tes at shop test2. New quantity: 21, New average cost: 83.76190476190476190476190476
+INFO 2025-04-10 14:53:00,976 signals Adjusted supplier 1 payable by 1550.00. New balance: 1720.00
+INFO 2025-04-10 15:00:19,524 autoreload /workspaces/mssports/mssports/urls.py changed, reloading.
+INFO 2025-04-10 15:00:20,167 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 15:10:02,191 autoreload /workspaces/mssports/mssports/urls.py changed, reloading.
+INFO 2025-04-10 15:10:02,839 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 15:10:27,473 autoreload /workspaces/mssports/mssports/urls.py changed, reloading.
+INFO 2025-04-10 15:10:28,093 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 15:11:29,981 signals Created new receipt #2 for 10 to account Account tes
+INFO 2025-04-10 15:11:29,983 signals Updated sales invoice #1 paid amount increased by 10
+INFO 2025-04-10 15:11:29,984 signals Updated customer test-(0206316462) credit decreased by 10
+INFO 2025-04-10 16:35:58,676 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 16:42:26,838 autoreload /workspaces/mssports/account/models.py changed, reloading.
+INFO 2025-04-10 16:42:27,553 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 17:39:43,258 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 17:53:38,934 autoreload /workspaces/mssports/account/models.py changed, reloading.
+INFO 2025-04-10 17:53:39,899 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 18:08:02,054 autoreload /workspaces/mssports/account/models.py changed, reloading.
+INFO 2025-04-10 18:08:03,129 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 18:08:32,893 autoreload /workspaces/mssports/account/models.py changed, reloading.
+INFO 2025-04-10 18:08:34,079 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 18:09:22,135 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 18:09:23,173 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:23:51,937 signals Created new receipt #3 for 40 to account Account tes
+INFO 2025-04-10 21:23:51,949 signals Updated sales invoice #1 paid amount increased by 40
+INFO 2025-04-10 21:23:51,953 signals Updated customer test-(0206316462) credit decreased by 40
+INFO 2025-04-10 21:25:45,648 signals Added 0.0 to supplier 1 payable balance. New balance: 1720.00
+INFO 2025-04-10 21:25:45,652 signals Creating new purchase invoice item for product tes at shop test2
+INFO 2025-04-10 21:25:45,657 signals Updated existing stock for product tes at shop test2. New quantity: 31, New average cost: 88.99870967741935483870967742
+INFO 2025-04-10 21:25:45,674 signals Adjusted supplier 1 payable by 1000.00. New balance: 2720.00
+INFO 2025-04-10 21:35:21,511 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 21:35:22,548 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:35:51,805 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 21:35:52,861 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:36:05,660 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 21:36:06,697 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:40:12,865 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:43:53,393 autoreload /workspaces/mssports/mssports/settings/base.py changed, reloading.
+INFO 2025-04-10 21:43:54,604 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:54:59,758 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 21:55:00,860 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:55:12,588 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 21:55:13,620 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:55:29,470 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 21:55:30,442 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:55:50,342 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:55:53,764 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 21:55:54,907 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:57:09,649 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:57:37,948 autoreload /workspaces/mssports/customer/admin.py changed, reloading.
+INFO 2025-04-10 21:57:39,121 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:58:10,947 autoreload /workspaces/mssports/customer/admin.py changed, reloading.
+INFO 2025-04-10 21:58:11,973 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:58:40,336 autoreload /workspaces/mssports/inventory/admin/stock_transfers.py changed, reloading.
+INFO 2025-04-10 21:58:41,392 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:58:44,803 autoreload /workspaces/mssports/inventory/admin/stock_transfers.py changed, reloading.
+INFO 2025-04-10 21:58:45,858 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 21:59:39,026 autoreload /workspaces/mssports/inventory/admin/stock_transfers.py changed, reloading.
+INFO 2025-04-10 21:59:40,108 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:00:45,860 autoreload /workspaces/mssports/inventory/admin/stock.py changed, reloading.
+INFO 2025-04-10 22:00:46,985 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:01:57,845 autoreload /workspaces/mssports/payment/admin.py changed, reloading.
+INFO 2025-04-10 22:01:58,948 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:37:40,083 autoreload /workspaces/mssports/inventory/admin/stock.py changed, reloading.
+INFO 2025-04-10 22:37:41,274 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:37:56,173 autoreload /workspaces/mssports/inventory/admin/stock_transfers.py changed, reloading.
+INFO 2025-04-10 22:37:57,390 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:38:21,646 autoreload /workspaces/mssports/customer/admin.py changed, reloading.
+INFO 2025-04-10 22:38:22,700 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:38:54,154 autoreload /workspaces/mssports/account/admin.py changed, reloading.
+INFO 2025-04-10 22:38:55,278 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:39:31,896 autoreload /workspaces/mssports/product/admin.py changed, reloading.
+INFO 2025-04-10 22:39:33,115 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:40:02,476 autoreload /workspaces/mssports/purchase_invoice/admin.py changed, reloading.
+INFO 2025-04-10 22:40:03,585 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:40:24,661 autoreload /workspaces/mssports/receipt/admin.py changed, reloading.
+INFO 2025-04-10 22:40:25,852 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:41:20,146 autoreload /workspaces/mssports/sale_invoice/admin.py changed, reloading.
+INFO 2025-04-10 22:41:21,261 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:41:48,590 autoreload /workspaces/mssports/shop/admin.py changed, reloading.
+INFO 2025-04-10 22:41:49,697 autoreload Watching for file changes with StatReloader
+INFO 2025-04-10 22:42:04,537 autoreload /workspaces/mssports/supplier/admin.py changed, reloading.
+INFO 2025-04-10 22:42:05,596 autoreload Watching for file changes with StatReloader

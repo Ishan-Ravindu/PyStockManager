@@ -1,11 +1,10 @@
 from django.contrib import admin
-from django.utils.html import format_html
 from django import forms
 from django.core.exceptions import ValidationError
 from ..models import StockTransfer, StockTransferItem, Stock
+from simple_history.admin import SimpleHistoryAdmin
 
 class StockTransferItemInlineFormSet(forms.BaseInlineFormSet):
-    # TODO: move to model
     def clean(self):
         super().clean()
         if not hasattr(self.instance, 'from_shop') or not self.instance.from_shop:
@@ -37,7 +36,7 @@ class StockTransferItemInline(admin.TabularInline):
     formset = StockTransferItemInlineFormSet
 
 @admin.register(StockTransfer)
-class StockTransferAdmin(admin.ModelAdmin):
+class StockTransferAdmin(SimpleHistoryAdmin):
     list_display = ('id', 'from_shop', 'to_shop', 'description', 'created_at')
     list_filter = ('from_shop', 'to_shop', 'created_at')
     search_fields = ('from_shop__name', 'to_shop__name')

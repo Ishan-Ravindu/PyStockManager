@@ -42,46 +42,27 @@ def receipt_account_update(sender, instance, created, **kwargs):
     """
     if created:
         with transaction.atomic():
-            instance.account.update_balance(
-                amount=instance.amount,
-                related_obj=instance,
-                transaction_type='DEPOSIT',
-                action_type='CREATE',
-                description=f"Receipt #{instance.pk} for Sales Invoice #{instance.sales_invoice.pk}"
-            )
+            instance.account.balance += instance.amount
+            instance.account.save(update_fields=['balance'])
             logger.info(f"Created new receipt #{instance.pk} for {instance.amount} to account {instance.account}")
     else:
         if hasattr(instance, '_original_amount') and hasattr(instance, '_original_account'):
             with transaction.atomic():
                 if instance._original_account != instance.account:
                     # Account changed, reverse from old account and add to new account
-                    instance._original_account.update_balance(
-                        amount=-instance._original_amount,
-                        related_obj=instance,
-                        transaction_type='DEPOSIT',
-                        action_type='UPDATE',
-                        description=f"Reversal of Receipt #{instance.pk} (account changed)"
-                    )
-                    instance.account.update_balance(
-                        amount=instance.amount,
-                        related_obj=instance,
-                        transaction_type='DEPOSIT',
-                        action_type='UPDATE',
-                        description=f"Receipt #{instance.pk} (updated to this account)"
-                    )
+                    instance._original_account.balance -= instance._original_amount
+                    instance._original_account.save(update_fields=['balance'])
+                    
+                    instance.account.balance += instance.amount
+                    instance.account.save(update_fields=['balance'])
                     logger.info(f"Receipt #{instance.pk} account changed from {instance._original_account} "
                                f"to {instance.account}, amount {instance.amount}")
                 else:
                     # Same account but amount changed
                     delta = instance.amount - instance._original_amount
                     if delta != 0:
-                        instance.account.update_balance(
-                            amount=delta,
-                            related_obj=instance,
-                            transaction_type='DEPOSIT',
-                            action_type='UPDATE',
-                            description=f"Receipt #{instance.pk} amount changed from {instance._original_amount} to {instance.amount}"
-                        )
+                        instance.account.balance += delta
+                        instance.account.save(update_fields=['balance'])
                         logger.info(f"Receipt #{instance.pk} amount changed from {instance._original_amount} "
                                    f"to {instance.amount}, delta {delta}")
 
@@ -159,13 +140,8 @@ def receipt_pre_delete(sender, instance, **kwargs):
     3. Increasing the customer credit if applicable
     """
     with transaction.atomic():
-        instance.account.update_balance(
-            amount=-instance.amount,
-            related_obj=instance,
-            transaction_type='DEPOSIT',
-            action_type='DELETE',
-            description=f"Deletion of Receipt #{instance.pk} for Sales Invoice #{instance.sales_invoice.pk}"
-        )
+        instance.account.balance -= instance.amount
+        instance.account.save(update_fields=['balance'])
         logger.info(f"Receipt #{instance.pk} deleted, removed {instance.amount} from account {instance.account}")
         
         instance.sales_invoice.paid_amount -= instance.amount

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.db.models import Sum, F
 from django.contrib.admin import SimpleListFilter
+from simple_history.admin import SimpleHistoryAdmin
 
 from inventory.models.stock import Stock
 
@@ -52,7 +53,7 @@ class PriceComparisonFilter(SimpleListFilter):
         return queryset
 
 @admin.register(Stock)
-class StockAdmin(admin.ModelAdmin):
+class StockAdmin(SimpleHistoryAdmin):
     list_display = ('product_with_shops',)
     list_filter = (
         'product',

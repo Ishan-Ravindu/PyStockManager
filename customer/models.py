@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.html import format_html
 from utils import phone_regex
+from simple_history.models import HistoricalRecords
 
 class Customer(models.Model):
     name = models.CharField(max_length=255)
@@ -11,6 +12,7 @@ class Customer(models.Model):
     credit_limit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     credit_period = models.IntegerField(default=0)
     black_list = models.BooleanField(default=False)
+    history = HistoricalRecords()
 
     def __str__(self):
         return f"{self.name}-({self.mobile_number})"

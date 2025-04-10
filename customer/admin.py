@@ -1,9 +1,10 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from customer.models import Customer
 
 @admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
+class CustomerAdmin(SimpleHistoryAdmin):
     list_display = ('name', 'mobile_number', 'address', 'credit', 'credit_limit', 
                    'credit_period', 'combined_status', 'black_list')
     list_filter = ('credit_period', 'black_list')

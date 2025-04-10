@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 class Stock(models.Model):
     shop = models.ForeignKey('shop.Shop', on_delete=models.CASCADE)
@@ -6,6 +7,7 @@ class Stock(models.Model):
     quantity = models.IntegerField(default=0)
     average_cost = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
+    history = HistoricalRecords()
 
     class Meta:
         unique_together = ('shop', 'product')

@@ -43,46 +43,27 @@ def payment_account_update(sender, instance, created, **kwargs):
     """
     if created:
         with transaction.atomic():
-            instance.account.update_balance(
-                amount=-instance.amount,  # Negative because money is going out
-                related_obj=instance,
-                transaction_type='WITHDRAWAL',
-                action_type='CREATE',
-                description=f"Payment #{instance.pk} for Purchase Invoice #{instance.purchase_invoice.pk}"
-            )
+            instance.account.balance -= instance.amount
+            instance.account.save(update_fields=['balance'])
             logger.info(f"Created new payment #{instance.pk} for {instance.amount} from account {instance.account}")
     else:
         if hasattr(instance, '_original_amount') and hasattr(instance, '_original_account'):
             with transaction.atomic():
                 if instance._original_account != instance.account:
                     # Account changed, reverse from old account and subtract from new account
-                    instance._original_account.update_balance(
-                        amount=instance._original_amount,  # Positive to reverse the original withdrawal
-                        related_obj=instance,
-                        transaction_type='WITHDRAWAL',
-                        action_type='UPDATE',
-                        description=f"Reversal of Payment #{instance.pk} (account changed)"
-                    )
-                    instance.account.update_balance(
-                        amount=-instance.amount,  # Negative because money is going out
-                        related_obj=instance,
-                        transaction_type='WITHDRAWAL',
-                        action_type='UPDATE',
-                        description=f"Payment #{instance.pk} (updated to this account)"
-                    )
+                    instance._original_account.balance += instance._original_amount
+                    instance._original_account.save(update_fields=['balance'])
+                    
+                    instance.account.balance -= instance.amount
+                    instance.account.save(update_fields=['balance'])
                     logger.info(f"Payment #{instance.pk} account changed from {instance._original_account} "
                                f"to {instance.account}, amount {instance.amount}")
                 else:
                     # Same account but amount changed
                     delta = instance.amount - instance._original_amount
                     if delta != 0:
-                        instance.account.update_balance(
-                            amount=-delta,  # Negative delta for an increase in payment
-                            related_obj=instance,
-                            transaction_type='WITHDRAWAL',
-                            action_type='UPDATE',
-                            description=f"Payment #{instance.pk} amount changed from {instance._original_amount} to {instance.amount}"
-                        )
+                        instance.account.balance -= delta
+                        instance.account.save(update_fields=['balance'])
                         logger.info(f"Payment #{instance.pk} amount changed from {instance._original_amount} "
                                    f"to {instance.amount}, delta {delta}")
 
@@ -160,13 +141,8 @@ def payment_pre_delete(sender, instance, **kwargs):
     3. Increasing the supplier payable if applicable
     """
     with transaction.atomic():
-        instance.account.update_balance(
-            amount=instance.amount,  # Positive to reverse the withdrawal
-            related_obj=instance,
-            transaction_type='WITHDRAWAL',
-            action_type='DELETE',
-            description=f"Deletion of Payment #{instance.pk} for Purchase Invoice #{instance.purchase_invoice.pk}"
-        )
+        instance.account.balance += instance.amount
+        instance.account.save(update_fields=['balance'])
         logger.info(f"Payment #{instance.pk} deleted, added {instance.amount} back to account {instance.account}")
         
         instance.purchase_invoice.paid_amount -= instance.amount

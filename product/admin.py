@@ -1,11 +1,12 @@
 from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from simple_history.admin import SimpleHistoryAdmin
 
 from product.models import Category, Product
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(SimpleHistoryAdmin):
     list_display = ('name', 'description', 'profit_margin')
     search_fields = ('name', 'description')
     list_filter = ('profit_margin',)
@@ -79,7 +80,7 @@ class ProductAdminForm(forms.ModelForm):
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(SimpleHistoryAdmin):
     form = ProductAdminForm
     list_display = ('name', 'category', 'description', 'profit_margin')
     search_fields = ('name', 'description')
