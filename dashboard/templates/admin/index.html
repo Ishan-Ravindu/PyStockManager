@@ -18,6 +18,7 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Fetch financial data
         axios.get('/api/purchase_invoice/total-payable/')
             .then(function(response) {
                 document.getElementById('total-payable').innerText = 'Rs. ' + parseFloat(response.data.total_payable).toFixed(2);
@@ -39,8 +40,106 @@
             .catch(function(error) {
                 console.error('Error fetching total balance:', error);
             });
+            
+        axios.get('/api/history/recent-history/?days=1&limit=10')
+            .then(function(response) {
+                const recentChangesContainer = document.getElementById('recent-changes-container');
+                recentChangesContainer.innerHTML = '';
+
+                const changes = response.data.results
+                
+                if (changes.length === 0) {
+                    recentChangesContainer.innerHTML = '<p class="text-muted">No recent changes found.</p>';
+                    return;
+                }
+                
+                changes.forEach(function(change) {
+                    const changeDate = new Date(change.history_date);
+                    const formattedDate = changeDate.toLocaleString();
+
+                    let badgeClass = 'badge badge-info';
+                    let changeType = 'Updated';
+
+                    if (change.history_type === '+') {
+                        badgeClass = 'badge badge-success';
+                        changeType = 'Created';
+                    } else if (change.history_type === '-') {
+                        badgeClass = 'badge badge-danger';
+                        changeType = 'Deleted';
+                    }
+
+                    let changedFieldsText = '';
+                    if (change.changed_fields && Object.keys(change.changed_fields).length > 0) {
+                        const fieldNames = Object.keys(change.changed_fields)
+                            .filter(field => !['id', 'history_user'].includes(field))
+                            .map(field => {
+                                const fieldData = change.changed_fields[field];
+                                if (fieldData.old_value !== null && fieldData.new_value !== null) {
+                                    return `<span class="font-weight-bold">${field}</span>: <span class="text-danger">${fieldData.old_value}</span> → <span class="text-success">${fieldData.new_value}</span>`;
+                                } else if (fieldData.new_value !== null) {
+                                    return `<span class="font-weight-bold">${field}</span>: ${fieldData.new_value}`;
+                                }
+                                return field;
+                            })
+                            .slice(0, 5)
+                            .join('<br>');
+                            
+                        if (fieldNames) {
+                            changedFieldsText = `<small class="text-muted">${fieldNames}</small>`;
+                        }
+                    }
+
+                    const modelParts = change.model_name.split('.');
+                    const modelName = modelParts[modelParts.length - 1].replace('Historical', '');
+
+                    const username = change.history_user ? change.history_user.username : 'Unknown';
+
+                    let instanceName = change.instance_name;
+                    if (instanceName.includes(" as of ")) {
+                        instanceName = instanceName.split(" as of ")[0];
+                    }
+
+                    let reasonText = '';
+                    if (change.history_change_reason) {
+                        reasonText = `<div class="mt-1"><small class="text-muted font-italic">"${change.history_change_reason}"</small></div>`;
+                    }
+
+                    const changeItem = document.createElement('div');
+                    changeItem.className = 'border-bottom py-2';
+                    changeItem.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><span class="${badgeClass}">${changeType}</span> ${modelName}</span>
+                            <small class="text-muted">${formattedDate}</small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>${instanceName}</strong>
+                            <small class="text-primary"><i class="fas fa-user mr-1"></i>${username}</small>
+                        </div>
+                        <div class="mt-1">${changedFieldsText}</div>
+                        ${reasonText}
+                    `;
+                    
+                    recentChangesContainer.appendChild(changeItem);
+                });
+            })
+            .catch(function(error) {
+                console.error('Error fetching recent history:', error);
+                document.getElementById('recent-changes-container').innerHTML = 
+                    '<div class="alert alert-danger">Error loading recent changes.</div>';
+            });
     });
 </script>
+
+<style>
+    #recent-changes-container .border-bottom:last-child {
+        border-bottom: none !important;
+    }
+    .change-badge {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+    }
+    /* Removed scroller */
+</style>
 {% endblock %}
 
 {% block content %}
@@ -90,63 +189,21 @@
     </div>
     <div class="col-lg-3 col-12">
         <div id="content-related">
-            <div class="module" id="recent-actions-module">
-                <h4 class="mb-3">{% trans 'Recent actions' %}</h4>
-                {% load log %}
-                {% get_admin_log 6 as admin_log for_user user %}
-                {% if not admin_log %}
-                    <p>{% trans 'None available' %}</p>
-                {% else %}
-                    <div class="timeline">
-                        {% for entry in admin_log %}
-                            <div>
-                                {% if entry.is_change %}
-                                    <i class="fas fa-edit bg-gray text-xs"></i>
-                                {% elif entry.is_deletion %}
-                                    <i class="fas fa-trash bg-danger text-xs"></i>
-                                {% elif entry.is_addition %}
-                                    <i class="fas fa-plus-circle bg-success text-xs"></i>
-                                {% endif %}
-
-                                <div class="timeline-item">
-                                    <span class="time"><i class="fas fa-clock"></i> {% blocktrans with timesince=entry.action_time|timesince %}{{ timesince }} ago{% endblocktrans %}</span>
-                                    <h3 class="timeline-header no-border">
-                                        {% if entry.is_deletion or not entry.get_admin_url %}
-                                            {{ entry.object_repr }}
-                                        {% else %}
-                                            <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
-                                        {% endif %}
-
-                                        {% if entry.model %}
-                                            <span class="mini quiet">
-                                                {% filter capfirst %}
-                                                    {{ entry.model }}
-                                                {% endfilter %}
-                                            </span>
-                                        {% endif %}
-                                    </h3>
-                                    {% if not entry.is_deletion %}
-                                        <div class="timeline-body">
-                                            {% if entry.is_addition %}
-                                                {{ entry }}
-                                            {% else %}
-                                                <ul style="list-style: none; padding: 0;">
-                                                    {% action_message_to_list entry as action_message_list %}
-                                                    {% for action_message in action_message_list %}
-                                                        <li>{{ action_message.msg|style_bold_first_word }}</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
+            <div class="module" id="custom-info-module">
+                <h4 class="mb-3"><i class="fas fa-history mr-2"></i>Today's Activity</h4>
+                <div class="card bg-white mb-3">
+                    <div class="card-body p-0">
+                        <div id="recent-changes-container" class="p-3">
+                            <div class="d-flex justify-content-center align-items-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="sr-only">Loading...</span>
                                 </div>
+                                <span class="ml-2">Loading recent changes...</span>
                             </div>
-                        {% endfor %}
-                        <div>
-                            <i class="fa fa-clock bg-gray"></i>
                         </div>
                     </div>
-                {% endif %}
+                </div>               
+               
             </div>
         </div>
     </div>
