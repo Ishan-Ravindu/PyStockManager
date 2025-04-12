@@ -15,7 +15,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     profit_margin = models.DecimalField(max_digits=5, decimal_places=2, default=10.00)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     history = HistoricalRecords()

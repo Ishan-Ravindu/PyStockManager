@@ -7,6 +7,10 @@ class AccountAdmin(SimpleHistoryAdmin):
     list_display = ('name', 'balance')
     search_fields = ('name',)
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 @admin.register(Withdraw)
 class WithdrawAdmin(SimpleHistoryAdmin):
     list_display = ('account', 'amount', 'withdrawn_at')

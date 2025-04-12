@@ -4,7 +4,7 @@ from simple_history.models import HistoricalRecords
 class Shop(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
-    location = models.TextField()
+    location = models.TextField(blank=True, null=True)
     is_warehouse = models.BooleanField(default=False)
     history = HistoricalRecords()
 
