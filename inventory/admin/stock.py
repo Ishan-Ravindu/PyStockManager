@@ -134,7 +134,19 @@ class StockAdmin(SimpleHistoryAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        subquery = Stock.objects.filter(
-            product=OuterRef('product')
-        ).order_by('-quantity').values('id')[:1]
-        return qs.filter(id__in=Subquery(subquery)).order_by('product__name')
+        
+        # Get the highest quantity stock for each product
+        products = set()
+        result_ids = []
+        
+        # Get all stocks ordered by product and quantity descending
+        all_stocks = Stock.objects.all().select_related('product').order_by('product__name', '-quantity')
+        
+        # Take the first stock for each product (the one with highest quantity)
+        for stock in all_stocks:
+            if stock.product.id not in products:
+                products.add(stock.product.id)
+                result_ids.append(stock.id)
+        
+        # Return queryset filtered by the collected IDs
+        return qs.filter(id__in=result_ids).order_by('product__name')
