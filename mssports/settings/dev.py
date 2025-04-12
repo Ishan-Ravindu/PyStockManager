@@ -8,14 +8,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# Database
+# Database (from devcontainer)
 DATABASES = {
     'default': {
-        'ENGINE': "django.db.backends.postgresql",
-        'NAME': "postgres",
-        'USER': "postgres",
-        'PASSWORD': "postgres",
-        'HOST': "localhost",
-        'PORT': "5432",
+        'ENGINE': "django.db.backends.mysql",
+        'NAME': "devdb",
+        'USER': "root",
+        'PASSWORD': "rootpassword",
+        'HOST': "db",
+        'PORT': "3306",
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
+        }
     }
 }
