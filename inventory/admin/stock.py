@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from django.db.models import Sum, F
+from django.db.models import Sum, F, OuterRef, Subquery
 from django.contrib.admin import SimpleListFilter
 from simple_history.admin import SimpleHistoryAdmin
 
 from inventory.models.stock import Stock
+
 
 class QuantityRangeFilter(SimpleListFilter):
     title = 'quantity range'
@@ -32,6 +33,7 @@ class QuantityRangeFilter(SimpleListFilter):
             return queryset.filter(quantity__gte=101)
         return queryset
 
+
 class PriceComparisonFilter(SimpleListFilter):
     title = 'price comparison'
     parameter_name = 'price_comparison'
@@ -52,6 +54,7 @@ class PriceComparisonFilter(SimpleListFilter):
             return queryset.filter(selling_price=F('average_cost'))
         return queryset
 
+
 @admin.register(Stock)
 class StockAdmin(SimpleHistoryAdmin):
     list_display = ('product_with_shops',)
@@ -62,7 +65,7 @@ class StockAdmin(SimpleHistoryAdmin):
         PriceComparisonFilter,
     )
     search_fields = (
-        'shop__name', 
+        'shop__name',
         'shop__code',
         'product__name',
         'product__description',
@@ -70,17 +73,19 @@ class StockAdmin(SimpleHistoryAdmin):
     list_per_page = 20
 
     def has_change_permission(self, request, obj=None):
-        return False 
+        return False
+
     def has_delete_permission(self, request, obj=None):
         return False
+
     def has_add_permission(self, request):
         return False
 
     def product_with_shops(self, obj):
         stocks = Stock.objects.filter(product=obj.product).select_related('shop', 'product')
         total_quantity = stocks.aggregate(total=Sum('quantity'))['total'] or 0
-        
-        html = f"""
+
+        html = """
         <table style="width:100%; border-collapse: collapse; table-layout: fixed;">
             <thead>
                 <tr style="background-color: #f5f5f5;">
@@ -93,7 +98,7 @@ class StockAdmin(SimpleHistoryAdmin):
             </thead>
             <tbody>
         """
-        
+
         for i, stock in enumerate(stocks):
             html += f"""
             <tr style="background-color: {'#f9f9f9' if i % 2 else 'white'};">
@@ -110,7 +115,7 @@ class StockAdmin(SimpleHistoryAdmin):
                 </td>
             </tr>
             """
-        
+
         html += f"""
             <tr style="background-color: #e6e6e6; font-weight: bold;">
                 <td style="border: 1px solid #ddd; padding: 8px;"></td>
@@ -122,12 +127,14 @@ class StockAdmin(SimpleHistoryAdmin):
             </tbody>
         </table>
         """
-        
+
         return format_html(html)
-    
+
     product_with_shops.short_description = 'Product Stock Across Shops'
-    product_with_shops.allow_tags = True
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.order_by('product__name').distinct('product__name')
+        subquery = Stock.objects.filter(
+            product=OuterRef('product')
+        ).order_by('-quantity').values('id')[:1]
+        return qs.filter(id__in=Subquery(subquery)).order_by('product__name')
