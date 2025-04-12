@@ -8367,3 +8367,478 @@ INFO 2025-04-12 17:50:16,374 autoreload /workspaces/mssports/mssports/settings/_
 INFO 2025-04-12 17:50:17,061 autoreload Watching for file changes with StatReloader
 INFO 2025-04-12 19:35:27,944 autoreload /workspaces/mssports/mssports/settings/__init__.py changed, reloading.
 INFO 2025-04-12 19:35:28,706 autoreload Watching for file changes with StatReloader
+INFO 2025-04-12 20:04:23,185 autoreload Watching for file changes with StatReloader
+INFO 2025-04-12 20:04:59,922 autoreload Watching for file changes with StatReloader
+INFO 2025-04-12 20:07:27,443 autoreload Watching for file changes with StatReloader
+WARNING 2025-04-12 20:13:49,693 log Not Found: /static/vendor/adminlte/css/adminlte.min.css
+WARNING 2025-04-12 20:13:49,695 log Not Found: /static/jazzmin/css/main.css
+WARNING 2025-04-12 20:13:49,696 log Not Found: /static/vendor/fontawesome-free/css/all.min.css
+WARNING 2025-04-12 20:13:49,782 log Not Found: /static/admin/js/vendor/jquery/jquery.js
+WARNING 2025-04-12 20:13:49,811 log Not Found: /static/vendor/bootstrap/js/bootstrap.min.js
+WARNING 2025-04-12 20:13:49,812 log Not Found: /static/logo.png
+WARNING 2025-04-12 20:13:49,886 log Not Found: /static/vendor/adminlte/js/adminlte.min.js
+WARNING 2025-04-12 20:14:48,629 log Not Found: /favicon.ico
+WARNING 2025-04-12 20:28:13,876 log Not Found: /static/vendor/adminlte/css/adminlte.min.css
+WARNING 2025-04-12 20:28:13,883 log Not Found: /static/jazzmin/css/main.css
+WARNING 2025-04-12 20:28:14,005 log Not Found: /static/admin/js/vendor/jquery/jquery.js
+WARNING 2025-04-12 20:28:14,007 log Not Found: /static/logo.png
+WARNING 2025-04-12 20:28:14,023 log Not Found: /static/vendor/fontawesome-free/css/all.min.css
+WARNING 2025-04-12 20:28:14,136 log Not Found: /static/vendor/bootstrap/js/bootstrap.min.js
+WARNING 2025-04-12 20:28:14,138 log Not Found: /static/vendor/adminlte/js/adminlte.min.js
+WARNING 2025-04-12 20:28:37,351 log Not Found: /favicon.ico
+WARNING 2025-04-12 20:28:37,882 log Not Found: /favicon.png
+WARNING 2025-04-12 20:33:17,624 log Forbidden (Origin checking failed - https://mssports.lk does not match any trusted origins.): /admin/login/
+WARNING 2025-04-12 20:33:18,133 log Not Found: /favicon.ico
+ERROR 2025-04-12 20:37:32,474 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend
+ERROR 2025-04-12 20:37:44,459 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend
+INFO 2025-04-12 20:42:33,958 signals Added 0.0 to supplier 1 payable balance. New balance: 0.00
+INFO 2025-04-12 20:42:33,962 signals Creating new purchase invoice item for product Yonex Astrox 100 ZZ at shop CBB
+INFO 2025-04-12 20:42:33,966 signals Created new stock record for product Yonex Astrox 100 ZZ at shop CBB. Quantity: 100, Average cost: 1500, Selling price: 1800.00
+INFO 2025-04-12 20:42:33,975 signals Adjusted supplier 1 payable by 150000.00. New balance: 150000.00
+ERROR 2025-04-12 20:42:37,388 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend
+ERROR 2025-04-12 20:42:42,609 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend
+ERROR 2025-04-12 20:43:10,848 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend
+INFO 2025-04-12 20:44:00,663 signals Updated credit for new customer John Smith-(0758965488): increased by 0.0
+INFO 2025-04-12 20:44:00,672 signals Stock reduced by 12 for product Yonex Astrox 100 ZZ in shop CBB
+INFO 2025-04-12 20:44:00,684 signals Adjusted credit for customer John Smith-(0758965488) due to amount change: 19200.00
+INFO 2025-04-12 20:44:00,685 signals Updated total for invoice 1
+INFO 2025-04-12 20:44:00,687 signals Increased credit for customer John Smith-(0758965488) by 19200
+INFO 2025-04-12 20:45:02,418 signals Created new receipt #1 for 2500 to account Account Cash
+INFO 2025-04-12 20:45:02,436 signals Updated sales invoice #1 paid amount increased by 2500
+INFO 2025-04-12 20:45:02,440 signals Updated customer John Smith-(0758965488) credit decreased by 2500
+ERROR 2025-04-12 20:45:23,301 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend
+ERROR 2025-04-12 20:46:15,862 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend
+ERROR 2025-04-12 20:46:25,113 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend
+ERROR 2025-04-12 20:47:35,179 log Internal Server Error: /admin/inventory/stock/
+Traceback (most recent call last):
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1609, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 2155, in as_sql
+    inner_query_sql, inner_query_params = self.query.inner_query.get_compiler(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 814, in as_sql
+    distinct_result, distinct_params = self.connection.ops.distinct_sql(
+  File "/home/j9bqcm7s1zfp/virtualenv/mssports/3.10/lib/python3.10/site-packages/django/db/backends/base/operations.py", line 204, in distinct_sql
+    raise NotSupportedError(
+django.db.utils.NotSupportedError: DISTINCT ON fields is not supported by this database backend

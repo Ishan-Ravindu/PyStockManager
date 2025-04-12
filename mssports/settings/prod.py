@@ -20,3 +20,8 @@ DATABASES = {
         }
     }
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://mssports.lk",
+    "https://www.mssports.lk",
+]
