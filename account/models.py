@@ -12,31 +12,6 @@ class Account(models.Model):
     def __str__(self):
         return f"Account {self.name}"
 
-    def update_balance(self, amount, related_obj=None, transaction_type=None, action_type=None, description=''):
-        """
-        Update account balance without transaction history recording.
-        
-        Args:
-            amount: Decimal amount to change the balance by (positive or negative)
-        """
-        self.balance += amount
-        self.save(update_fields=['balance'])
-    
-    def adjust_balance(self, amount, description='Manual adjustment', performed_by=None):
-        """
-        Make a manual adjustment to the account balance.
-        
-        Args:
-            amount: Amount to adjust (positive or negative)
-            description: Description of the adjustment (unused)
-            performed_by: User who performed the adjustment (unused)
-        """
-        # Directly update balance
-        self.balance += amount
-        self.save(update_fields=['balance'])
-        
-        return True
-
 class Withdraw(models.Model):
     account = models.ForeignKey(Account, related_name='withdrawals', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
@@ -47,7 +22,6 @@ class Withdraw(models.Model):
         return f"Withdraw {self.amount} from {self.account}"
 
     def clean(self):
-        """Validate that the withdrawal amount doesn't exceed the account's balance."""
         if self.amount > self.account.balance:
             raise ValidationError('Insufficient balance for the withdrawal.')
         super().clean()
@@ -69,7 +43,6 @@ class AccountTransfer(models.Model):
         return f"Transfer {self.amount} from {self.from_account} to {self.to_account}"
 
     def clean(self):
-        """Validate that the transfer amount doesn't exceed the balance of the from_account."""
         if self.amount > self.from_account.balance:
             raise ValidationError('Insufficient balance in the source account for the transfer.')
         if self.from_account == self.to_account:
