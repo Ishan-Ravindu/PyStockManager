@@ -1,7 +1,7 @@
 from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
 from payment.models import Payment
-from .logic import (
+from ..logic.payment_logic import (
     capture_original_payment_state,
     update_account_on_payment_save,
     update_invoice_and_supplier_on_payment_save,
