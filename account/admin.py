@@ -15,7 +15,6 @@ class AccountAdmin(SimpleHistoryAdmin):
 class WithdrawAdmin(SimpleHistoryAdmin):
     list_display = ('account', 'amount', 'withdrawn_at')
     list_filter = ('account', 'withdrawn_at')
-    date_hierarchy = 'withdrawn_at'
 
     save_as = False
     save_on_top = False
@@ -28,7 +27,6 @@ class WithdrawAdmin(SimpleHistoryAdmin):
 class AccountTransferAdmin(SimpleHistoryAdmin):
     list_display = ('from_account', 'to_account', 'amount', 'transferred_at')
     list_filter = ('from_account', 'to_account', 'transferred_at')
-    date_hierarchy = 'transferred_at'
 
     save_as = False
     save_on_top = False
