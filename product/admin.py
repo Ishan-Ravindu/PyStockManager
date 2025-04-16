@@ -2,15 +2,20 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from simple_history.admin import SimpleHistoryAdmin
+from unfold.admin import ModelAdmin
+from unfold.contrib.import_export.forms import ExportForm, ImportForm
+from import_export.admin import ImportExportModelAdmin
 
 from product.models import Category, Product
 
 @admin.register(Category)
-class CategoryAdmin(SimpleHistoryAdmin):
+class CategoryAdmin(SimpleHistoryAdmin, ModelAdmin, ImportExportModelAdmin):
     list_display = ('name', 'description', 'profit_margin')
     search_fields = ('name', 'description')
     list_filter = ('profit_margin',)
     list_per_page = 20  
+    import_form_class = ImportForm
+    export_form_class = ExportForm
 
 class ProductAdminForm(forms.ModelForm):
     class Meta:
@@ -80,9 +85,11 @@ class ProductAdminForm(forms.ModelForm):
 
 
 @admin.register(Product)
-class ProductAdmin(SimpleHistoryAdmin):
+class ProductAdmin(SimpleHistoryAdmin, ModelAdmin, ImportExportModelAdmin):
     form = ProductAdminForm
     list_display = ('name', 'category', 'description', 'profit_margin')
     search_fields = ('name', 'description')
     fields = ('name', 'description', 'category', 'profit_margin')
     list_per_page = 20
+    import_form_class = ImportForm
+    export_form_class = ExportForm

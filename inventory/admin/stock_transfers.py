@@ -3,6 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from ..models import StockTransfer, StockTransferItem, Stock
 from simple_history.admin import SimpleHistoryAdmin
+from unfold.admin import ModelAdmin
 
 class StockTransferItemInlineFormSet(forms.BaseInlineFormSet):
     def clean(self):
@@ -36,7 +37,7 @@ class StockTransferItemInline(admin.TabularInline):
     formset = StockTransferItemInlineFormSet
 
 @admin.register(StockTransfer)
-class StockTransferAdmin(SimpleHistoryAdmin):
+class StockTransferAdmin(SimpleHistoryAdmin, ModelAdmin):
     list_display = ('id', 'from_shop', 'to_shop', 'description', 'created_at')
     list_filter = ('from_shop', 'to_shop', 'created_at')
     search_fields = ('from_shop__name', 'to_shop__name')

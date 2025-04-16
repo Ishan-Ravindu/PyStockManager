@@ -8,6 +8,8 @@ from django.forms import ValidationError
 from django.utils import timezone
 from django.forms.models import BaseInlineFormSet
 from simple_history.admin import SimpleHistoryAdmin
+from unfold.admin import ModelAdmin
+from unfold.admin import TabularInline
 
 from sale_invoice.models import SalesInvoice, SalesInvoiceItem
 
@@ -252,12 +254,12 @@ class MessageMixin:
 
 # ========== Inline Admin Classes ==========
 
-class SalesInvoiceItemInline(admin.StackedInline):
+class SalesInvoiceItemInline(TabularInline):
     """Admin inline for invoice items"""
     model = SalesInvoiceItem
     form = SalesInvoiceItemForm
     formset = SalesInvoiceItemFormSet
-    extra = 1
+    extra = 0
     
     def get_formset(self, request, obj=None, **kwargs):
         """Ensure formset is properly configured for Django admin"""
@@ -274,7 +276,7 @@ class SalesInvoiceItemInline(admin.StackedInline):
 # ========== Admin Classes ==========
 
 @admin.register(SalesInvoice)
-class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin):
+class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdmin):
     """Admin interface for sales invoices"""
     form = SalesInvoiceForm
     list_display = ('id', 'shop', 'customer', 'total_amount', 'paid_amount', 'created_at', 

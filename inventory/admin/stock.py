@@ -3,6 +3,7 @@ from django.utils.html import format_html
 from django.db.models import Sum, F, OuterRef, Subquery
 from django.contrib.admin import SimpleListFilter
 from simple_history.admin import SimpleHistoryAdmin
+from unfold.admin import ModelAdmin
 
 from inventory.models.stock import Stock
 
@@ -56,7 +57,7 @@ class PriceComparisonFilter(SimpleListFilter):
 
 
 @admin.register(Stock)
-class StockAdmin(SimpleHistoryAdmin):
+class StockAdmin(SimpleHistoryAdmin, ModelAdmin):
     list_display = ('product_with_shops',)
     list_filter = (
         'product',

@@ -1,10 +1,15 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
+from unfold.admin import ModelAdmin
+from unfold.contrib.import_export.forms import ExportForm, ImportForm
+from import_export.admin import ImportExportModelAdmin
 
 from expence.models import Expense
 
 
 @admin.register(Expense)
-class ExpenseAdmin(SimpleHistoryAdmin):
+class ExpenseAdmin(SimpleHistoryAdmin, ModelAdmin, ImportExportModelAdmin):
     list_display = ('id', 'name')
     search_fields = ('name', 'description')
+    import_form_class = ImportForm
+    export_form_class = ExportForm

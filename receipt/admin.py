@@ -3,6 +3,7 @@ from django.forms import ModelForm, ValidationError
 from django.urls import reverse
 from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
+from unfold.admin import ModelAdmin
 
 from receipt.models import Receipt
 
@@ -64,7 +65,7 @@ class ReceiptForm(ModelForm):
 
 
 @admin.register(Receipt)
-class ReceiptAdmin(SimpleHistoryAdmin, PDFViewMixin):
+class ReceiptAdmin(SimpleHistoryAdmin, PDFViewMixin, ModelAdmin):
     """Admin interface for receipts"""
     form = ReceiptForm
     list_display = ('id', 'sales_invoice', 'amount', 'account', 'received_at', 'view_receipt_pdf')
