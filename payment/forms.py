@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from payment.models import Payment
-from expence.models import Expense
+from expense.models import Expense
 from purchase_invoice.models import PurchaseInvoice
 
 

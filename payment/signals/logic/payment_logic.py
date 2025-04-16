@@ -46,7 +46,7 @@ def update_account_on_payment_save(instance, created):
 
 def update_payable_object_on_payment_save(instance, created):
     from purchase_invoice.models import PurchaseInvoice
-    from expence.models import Expense
+    from expense.models import Expense
     
     payable = instance.payable
     reason = ""
@@ -117,7 +117,7 @@ def update_payable_object_on_payment_save(instance, created):
 
 def handle_payment_delete(instance):
     from purchase_invoice.models import PurchaseInvoice
-    from expence.models import Expense
+    from expense.models import Expense
 
     payable = instance.payable
 

@@ -4,6 +4,7 @@ from unfold.admin import ModelAdmin
 from unfold.admin import TabularInline
 
 from purchase_invoice.models import PurchaseInvoice, PurchaseInvoiceItem
+from utils import invoice_number
 
 class PurchaseInvoiceItemInline(TabularInline):
     model = PurchaseInvoiceItem
@@ -11,16 +12,15 @@ class PurchaseInvoiceItemInline(TabularInline):
 
 @admin.register(PurchaseInvoice)
 class PurchaseInvoiceAdmin(SimpleHistoryAdmin, ModelAdmin):
-    list_display = ('id', 'supplier', 'shop', 'total_amount', 'paid_amount', 'created_at')
+    list_display = ('shop_code_and_id', 'supplier', 'shop', 'total_amount', 'paid_amount', 'created_at')
     list_filter = ('supplier', 'shop', 'created_at')
     search_fields = ('supplier__name', 'shop__name')
     readonly_fields = ('total_amount', 'paid_amount', 'created_at')
     inlines = [PurchaseInvoiceItemInline]
     list_per_page = 20
+    actions = None
 
-    # save_as = False
-    # save_on_top = False
-    # def has_change_permission(self, request, obj=None):
-    #     return False 
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+    def shop_code_and_id(self, obj):
+        return  invoice_number(obj.shop.code, obj.id)
+    shop_code_and_id.short_description = 'Invoice ID'
+    shop_code_and_id.admin_order_field = 'id'

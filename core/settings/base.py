@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     "supplier",
     "product",
     "customer",
-    "expence"
+    "expense"
 ]
 
 MIDDLEWARE = [
@@ -156,7 +156,7 @@ UNFOLD = {
                     {
                         "title": "Expenses",
                         "icon": "money",
-                        "link": reverse_lazy("admin:expence_expense_changelist")
+                        "link": reverse_lazy("admin:expense_expense_changelist")
                     },
                     {
                         "title": "Withdrawals",

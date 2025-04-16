@@ -12,6 +12,7 @@ from unfold.admin import ModelAdmin
 from unfold.admin import TabularInline
 
 from sale_invoice.models import SalesInvoice, SalesInvoiceItem
+from utils import invoice_number
 
 # ========== Validators ==========
 
@@ -279,7 +280,7 @@ class SalesInvoiceItemInline(TabularInline):
 class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdmin):
     """Admin interface for sales invoices"""
     form = SalesInvoiceForm
-    list_display = ('id', 'shop', 'customer', 'total_amount', 'paid_amount', 'created_at', 
+    list_display = ('shop_code_and_id', 'customer', 'total_amount', 'paid_amount', 'created_at', 
                    'due_date', 'payment_status', 'add_receipt_button', 'view_receipts', 
                    'view_invoice_pdf')
     list_filter = ('shop', 'customer', 'created_at')
@@ -289,6 +290,11 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
     inlines = [SalesInvoiceItemInline]
     list_per_page = 20
     actions = None
+
+    def shop_code_and_id(self, obj):
+        return  invoice_number(obj.shop.code, obj.id)
+    shop_code_and_id.short_description = 'Invoice ID'
+    shop_code_and_id.admin_order_field = 'id'
     
     def has_delete_permission(self, request, obj=None):
         """Control delete permission based on receipts"""

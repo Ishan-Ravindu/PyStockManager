@@ -4,7 +4,7 @@ from unfold.admin import ModelAdmin
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 from import_export.admin import ImportExportModelAdmin
 
-from expence.models import Expense
+from expense.models import Expense
 
 
 @admin.register(Expense)
