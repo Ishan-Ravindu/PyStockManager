@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     "shop",
     "supplier",
     "product",
-    "customer"
+    "customer",
+    "expence"
 ]
 
 MIDDLEWARE = [

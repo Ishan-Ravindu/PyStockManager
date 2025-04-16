@@ -1,9 +1,15 @@
 from django.contrib import admin
-from payment.models import Payment
 from simple_history.admin import SimpleHistoryAdmin
+from .models import Payment
+from .forms import PaymentForm
+
 
 @admin.register(Payment)
 class PaymentAdmin(SimpleHistoryAdmin):
-    list_display = ('id', 'purchase_invoice', 'amount', 'account', 'payment_date')
-    list_filter = ('payment_date', 'account')
-    readonly_fields = ('payment_date',)
+    form = PaymentForm
+    list_display = ['id', 'payable', 'amount', 'account', 'payment_date']
+    list_filter = ['payment_date', 'account', 'content_type']
+    search_fields = ['id', 'amount']
+    
+    class Media:
+        js = ['payment/js/payment_admin.js']

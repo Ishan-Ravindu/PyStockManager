@@ -12,11 +12,11 @@ def capture_original_payment_state(instance):
             old_payment = Payment.objects.get(pk=instance.pk)
             instance._original_amount = old_payment.amount
             instance._original_account = old_payment.account
-            instance._original_purchase_invoice = old_payment.purchase_invoice
+            instance._original_payable = old_payment.payable
         except Payment.DoesNotExist:
             instance._original_amount = None
             instance._original_account = None
-            instance._original_purchase_invoice = None
+            instance._original_payable = None
 
 
 def update_account_on_payment_save(instance, created):
@@ -38,59 +38,104 @@ def update_account_on_payment_save(instance, created):
                     delta = instance.amount - instance._original_amount
                     instance.account.balance -= delta
                     reason = f"Payment amount updated from {instance._original_amount} to {instance.amount}"
+
         instance.account.save(update_fields=['balance'])
         instance._history_change_reason = getattr(instance, '_change_reason', reason)
         logger.info(f"[Account] Payment #{instance.pk} processed. Reason: {instance._history_change_reason}")
 
 
-def update_invoice_and_supplier_on_payment_save(instance, created):
+def update_payable_object_on_payment_save(instance, created):
+    from purchase_invoice.models import PurchaseInvoice
+    from expence.models import Expense
+    
+    payable = instance.payable
+    reason = ""
+
     with transaction.atomic():
         if created:
-            instance.purchase_invoice.paid_amount += instance.amount
-            reason = f"Payment created: Invoice #{instance.purchase_invoice.pk} paid {instance.amount}"
-            instance.purchase_invoice.save(update_fields=['paid_amount'])
-            if instance.purchase_invoice.supplier:
-                instance.purchase_invoice.supplier.payable -= Decimal(str(instance.amount))
-                instance.purchase_invoice.supplier.save(update_fields=['payable'])
-        else:
-            if hasattr(instance, '_original_amount') and hasattr(instance, '_original_purchase_invoice'):
-                if instance._original_purchase_invoice != instance.purchase_invoice:
-                    instance._original_purchase_invoice.paid_amount -= instance._original_amount
-                    instance._original_purchase_invoice.save(update_fields=['paid_amount'])
-                    if instance._original_purchase_invoice.supplier:
-                        instance._original_purchase_invoice.supplier.payable += Decimal(str(instance._original_amount))
-                        instance._original_purchase_invoice.supplier.save(update_fields=['payable'])
+            if isinstance(payable, PurchaseInvoice):
+                payable.paid_amount += instance.amount
+                payable.save(update_fields=['paid_amount'])
+                reason = f"Invoice #{payable.pk} paid {instance.amount}"
 
-                    instance.purchase_invoice.paid_amount += instance.amount
-                    instance.purchase_invoice.save(update_fields=['paid_amount'])
-                    if instance.purchase_invoice.supplier:
-                        instance.purchase_invoice.supplier.payable -= Decimal(str(instance.amount))
-                        instance.purchase_invoice.supplier.save(update_fields=['payable'])
-                    reason = f"Invoice changed on Payment #{instance.pk}"
+                if payable.supplier:
+                    payable.supplier.payable -= instance.amount
+                    payable.supplier.save(update_fields=['payable'])
+
+            elif isinstance(payable, Expense):
+                payable.paid_amount += instance.amount
+                payable.save(update_fields=['paid_amount'])
+                reason = f"Expense #{payable.pk} paid {instance.amount}"
+
+        else:
+            if hasattr(instance, '_original_amount') and hasattr(instance, '_original_payable'):
+                if instance._original_payable != payable:
+                    # Rollback from old
+                    if isinstance(instance._original_payable, PurchaseInvoice):
+                        instance._original_payable.paid_amount -= instance._original_amount
+                        instance._original_payable.save(update_fields=['paid_amount'])
+                        if instance._original_payable.supplier:
+                            instance._original_payable.supplier.payable += instance._original_amount
+                            instance._original_payable.supplier.save(update_fields=['payable'])
+
+                    elif isinstance(instance._original_payable, Expense):
+                        instance._original_payable.paid_amount -= instance._original_amount
+                        instance._original_payable.save(update_fields=['paid_amount'])
+
+                    # Apply to new
+                    if isinstance(payable, PurchaseInvoice):
+                        payable.paid_amount += instance.amount
+                        payable.save(update_fields=['paid_amount'])
+                        if payable.supplier:
+                            payable.supplier.payable -= instance.amount
+                            payable.supplier.save(update_fields=['payable'])
+
+                    elif isinstance(payable, Expense):
+                        payable.paid_amount += instance.amount
+                        payable.save(update_fields=['paid_amount'])
+
+                    reason = f"Payable object changed on Payment #{instance.pk}"
+
                 else:
                     delta = instance.amount - instance._original_amount
-                    instance.purchase_invoice.paid_amount += delta
-                    instance.purchase_invoice.save(update_fields=['paid_amount'])
-                    if instance.purchase_invoice.supplier:
-                        instance.purchase_invoice.supplier.payable -= Decimal(str(delta))
-                        instance.purchase_invoice.supplier.save(update_fields=['payable'])
-                    reason = f"Invoice #{instance.purchase_invoice.pk} adjusted by {delta}"
+                    if isinstance(payable, PurchaseInvoice):
+                        payable.paid_amount += delta
+                        payable.save(update_fields=['paid_amount'])
+                        if payable.supplier:
+                            payable.supplier.payable -= delta
+                            payable.supplier.save(update_fields=['payable'])
+
+                    elif isinstance(payable, Expense):
+                        payable.paid_amount += delta
+                        payable.save(update_fields=['paid_amount'])
+
+                    reason = f"Payable #{payable.pk} adjusted by {delta}"
+
         instance._history_change_reason = getattr(instance, '_change_reason', reason)
-        logger.info(f"[Invoice] Payment #{instance.pk} processed. Reason: {instance._history_change_reason}")
+        logger.info(f"[Payable] Payment #{instance.pk} processed. Reason: {instance._history_change_reason}")
 
 
 def handle_payment_delete(instance):
+    from purchase_invoice.models import PurchaseInvoice
+    from expence.models import Expense
+
+    payable = instance.payable
+
     with transaction.atomic():
         instance.account.balance += instance.amount
         instance.account.save(update_fields=['balance'])
 
-        instance.purchase_invoice.paid_amount -= instance.amount
-        instance.purchase_invoice.save(update_fields=['paid_amount'])
+        if isinstance(payable, PurchaseInvoice):
+            payable.paid_amount -= instance.amount
+            payable.save(update_fields=['paid_amount'])
 
-        if instance.purchase_invoice.supplier:
-            instance.purchase_invoice.supplier.payable += Decimal(str(instance.amount))
-            instance.purchase_invoice.supplier.save(update_fields=['payable'])
+            if payable.supplier:
+                payable.supplier.payable += instance.amount
+                payable.supplier.save(update_fields=['payable'])
+
+        elif isinstance(payable, Expense):
+            payable.paid_amount -= instance.amount
+            payable.save(update_fields=['paid_amount'])
 
         instance._history_change_reason = f"Payment #{instance.pk} deleted, reverted changes"
         logger.info(f"[Delete] Payment #{instance.pk} deleted. Reason: {instance._history_change_reason}")
-
