@@ -11,6 +11,7 @@ class Customer(models.Model):
     credit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     credit_limit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     credit_period = models.IntegerField(default=0)
+    whole_sale = models.BooleanField(default=False)
     black_list = models.BooleanField(default=False)
     history = HistoricalRecords()
 

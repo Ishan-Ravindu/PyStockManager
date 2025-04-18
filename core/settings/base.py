@@ -142,6 +142,24 @@ UNFOLD = {
                     },
                 ],
             },
+            # Sales & Purchases Section
+            {
+                "separator": True, 
+                "collapsible": False,
+                "title": "Transactions",
+                "items": [
+                    {
+                        "title": "Sales Invoices",
+                        "icon": "receipt_long",
+                        "link": reverse_lazy("admin:sale_invoice_salesinvoice_changelist")
+                    },
+                    {
+                        "title": "Purchase Invoices",
+                        "icon": "shopping_cart",
+                        "link": reverse_lazy("admin:purchase_invoice_purchaseinvoice_changelist")
+                    },
+                ],
+            },
             # Financial Section
             {
                 "separator": True,
@@ -177,24 +195,6 @@ UNFOLD = {
                         "title": "Receipts",
                         "icon": "receipt",
                         "link": reverse_lazy("admin:receipt_receipt_changelist")
-                    },
-                ],
-            },
-            # Sales & Purchases Section
-            {
-                "separator": True, 
-                "collapsible": False,
-                "title": "Transactions",
-                "items": [
-                    {
-                        "title": "Sales Invoices",
-                        "icon": "receipt_long",
-                        "link": reverse_lazy("admin:sale_invoice_salesinvoice_changelist")
-                    },
-                    {
-                        "title": "Purchase Invoices",
-                        "icon": "shopping_cart",
-                        "link": reverse_lazy("admin:purchase_invoice_purchaseinvoice_changelist")
                     },
                 ],
             },

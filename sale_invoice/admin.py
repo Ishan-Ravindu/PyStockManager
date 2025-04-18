@@ -291,6 +291,9 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
     list_per_page = 20
     actions = None
 
+    class Media:
+        js = ('sale_invoice/js/sales_invoice_customer.js','sale_invoice/js/sales_invoice_items.js',)
+
     def shop_code_and_id(self, obj):
         return  invoice_number(obj.shop.code, obj.id)
     shop_code_and_id.short_description = 'Invoice ID'
