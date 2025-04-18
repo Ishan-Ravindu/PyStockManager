@@ -91,7 +91,7 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
         self.display_success(request, f"{invoice_ref} was deleted successfully")
 
     def response_delete(self, request, obj_display, obj_id):
-        return redirect(reverse('admin:inventory_salesinvoice_changelist'))
+        return redirect(reverse('admin:sale_invoice_salesinvoice_changelist'))
 
     def add_receipt_button(self, obj):
         url = reverse('admin:receipt_receipt_add') + f'?invoice={obj.id}'
