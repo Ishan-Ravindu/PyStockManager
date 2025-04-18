@@ -17,10 +17,9 @@ from .validators import InvoiceValidator
 
 @admin.register(SalesInvoice)
 class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdmin):
-    """Admin interface for sales invoices"""
     form = SalesInvoiceForm
-    list_display = ('shop_code_and_id', 'customer', 'total_amount', 'paid_amount', 'created_at', 
-                   'due_date', 'payment_status', 'add_receipt_button', 'view_receipts', 
+    list_display = ('get_created_at', 'shop_code_and_id', 'customer', 'total_amount', 'paid_amount', 
+                   'average_cost', 'profit', 'due_date', 'payment_status', 'add_receipt_button', 'view_receipts', 
                    'view_invoice_pdf')
     list_filter = ('shop', 'customer', 'created_at')
     search_fields = ('shop__name', 'customer__name')
@@ -37,6 +36,16 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
         return  invoice_number(obj.shop.code, obj.id)
     shop_code_and_id.short_description = 'Invoice ID'
     shop_code_and_id.admin_order_field = 'id'
+
+    def get_created_at(self, obj):
+        return obj.created_at.strftime("%B %d, %Y")    
+    get_created_at.short_description = "Created At"
+
+    def average_cost(self, obj):
+        return "100"
+    
+    def profit(self, obj):
+        return "100"
     
     def has_delete_permission(self, request, obj=None):
         if not InvoiceService.can_delete_invoice(obj):

@@ -38,11 +38,19 @@ class SalesInvoice(models.Model):
     payment_status.short_description = 'Status'
 
 class SalesInvoiceItem(models.Model):
+    DISCOUNT_METHOD_CHOICES = [
+        ('amount', 'Amount'),
+        ('percentage', 'Percentage'),
+    ]
+    
     sales_invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey('product.Product', on_delete=models.CASCADE)
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    average_cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    discount_method = models.CharField(max_length=10, choices=DISCOUNT_METHOD_CHOICES, default='amount')
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     history = HistoricalRecords()
     
     def __str__(self):
-        return f"{self.product.name} - {self.quantity} pcs"
+        return f"{self.product.name}"
