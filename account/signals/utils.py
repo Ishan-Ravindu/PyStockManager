@@ -1,6 +1,3 @@
-def set_change_reason(instance, default_reason):
-    instance._history_change_reason = getattr(instance, '_change_reason', default_reason)
-
 def save_balance(account, amount_delta):
     account.balance += amount_delta
     account.save(update_fields=['balance'])
