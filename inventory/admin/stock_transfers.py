@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from ..models import StockTransfer, StockTransferItem, Stock
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
+from unfold.admin import TabularInline
 
 class StockTransferItemInlineFormSet(forms.BaseInlineFormSet):
     def clean(self):
@@ -31,7 +32,7 @@ class StockTransferItemInlineFormSet(forms.BaseInlineFormSet):
                     f"Available: {available_stock}, Requested: {total_quantity}"
                 )
 
-class StockTransferItemInline(admin.TabularInline):
+class StockTransferItemInline(TabularInline):
     model = StockTransferItem
     extra = 1
     formset = StockTransferItemInlineFormSet
