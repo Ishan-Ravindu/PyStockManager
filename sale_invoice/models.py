@@ -14,8 +14,20 @@ class SalesInvoice(models.Model):
         return f"{self.shop.code}#{self.id} - ({self.paid_amount}/{self.total_amount})"
     
     def update_total_amount(self):
-        """Calculate and update total amount from sales invoice items."""
-        total = sum(item.price * item.quantity for item in self.items.all())
+        """Calculate and update total amount from sales invoice items, considering discounts.
+        Both amount and percentage discounts are applied per unit."""
+        total = 0
+        for item in self.items.all():
+            unit_price = item.price if item.price else 0            
+            if item.discount_method == 'amount':
+                discounted_unit_price = max(unit_price - item.discount_amount, 0)
+            elif item.discount_method == 'percentage':
+                discount_value = unit_price * (item.discount_amount / 100)
+                discounted_unit_price = max(unit_price - discount_value, 0)
+            else:
+                discounted_unit_price = unit_price                
+            line_total = discounted_unit_price * item.quantity
+            total += line_total        
         self.total_amount = total
         self.save(update_fields=['total_amount'])
     
@@ -36,6 +48,24 @@ class SalesInvoice(models.Model):
         else:
             return format_html('<span style="color: blue; font-weight: bold;">Partially Paid</span>')
     payment_status.short_description = 'Status'
+
+    def get_total_average_cost(self):
+        """
+        Calculate the sum of all average_cost values from all invoice items.
+        Returns 0 if there are no items or all average_cost values are null.
+        """
+        total = 0
+        for item in self.items.all():
+            if item.average_cost is not None:
+                total += item.average_cost
+        return total
+
+    def get_profit(self):
+        """
+        Calculate the profit of the invoice (total_amount - total_average_cost).
+        """
+        total_avg_cost = self.get_total_average_cost()
+        return self.total_amount - total_avg_cost
 
 class SalesInvoiceItem(models.Model):
     DISCOUNT_METHOD_CHOICES = [

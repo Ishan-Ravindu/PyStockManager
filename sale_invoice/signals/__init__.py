@@ -1,1 +1,1 @@
-from .handlers import customer_handlers, invoice_item_handlers, shop_handlers
+from .handlers import customer_handlers, invoice_item_handlers, shop_handlers, average_cost_handlers

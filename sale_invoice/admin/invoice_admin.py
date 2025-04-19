@@ -42,10 +42,16 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
     get_created_at.short_description = "Created At"
 
     def average_cost(self, obj):
-        return "100"
-    
+        """Display total of all average costs of items"""
+        total_avg_cost = obj.get_total_average_cost()
+        return "{:.2f}".format(total_avg_cost) if total_avg_cost else "0.00"
+    average_cost.short_description = "Total Avg Cost"
+
     def profit(self, obj):
-        return "100"
+        """Display profit (total amount - total average cost) formatted as currency"""
+        profit_value = obj.get_profit()
+        return "{:.2f}".format(profit_value) if profit_value else "0.00"
+    profit.short_description = "Profit"
     
     def has_delete_permission(self, request, obj=None):
         if not InvoiceService.can_delete_invoice(obj):
