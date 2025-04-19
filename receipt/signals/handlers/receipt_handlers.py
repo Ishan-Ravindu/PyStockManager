@@ -1,12 +1,8 @@
 from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
-import logging
 
 from receipt.models import Receipt
 from receipt.signals.logic.receipt_logic import capture_original_receipt_state, reverse_receipt_effects, update_account_balance, update_invoice_customer
-
-# Set up logger
-logger = logging.getLogger(__name__)
 
 @receiver(pre_save, sender=Receipt)
 def receipt_pre_save(sender, instance, **kwargs):
@@ -16,7 +12,7 @@ def receipt_pre_save(sender, instance, **kwargs):
     This function saves the original amount, account, and sales_invoice 
     to enable proper handling of balance updates when these fields change.
     """
-    capture_original_receipt_state(instance, logger)
+    capture_original_receipt_state(instance)
 
 
 @receiver(post_save, sender=Receipt)
@@ -27,7 +23,7 @@ def receipt_account_update(sender, instance, created, **kwargs):
     For new receipts, add the amount to the account balance.
     For updated receipts, handle account changes and amount changes appropriately.
     """
-    update_account_balance(instance, created, logger)
+    update_account_balance(instance, created)
 
 
 @receiver(post_save, sender=Receipt)
@@ -38,7 +34,7 @@ def receipt_invoice_customer_update(sender, instance, created, **kwargs):
     For new receipts, increase invoice paid amount and decrease customer credit.
     For updated receipts, handle invoice changes and amount changes appropriately.
     """
-    update_invoice_customer(instance, created, logger)
+    update_invoice_customer(instance, created)
 
 
 @receiver(pre_delete, sender=Receipt)
@@ -51,4 +47,4 @@ def receipt_pre_delete(sender, instance, **kwargs):
     2. Decreasing the invoice paid amount
     3. Increasing the customer credit if applicable
     """
-    reverse_receipt_effects(instance, logger)
+    reverse_receipt_effects(instance)

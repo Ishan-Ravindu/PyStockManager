@@ -40,8 +40,8 @@ def update_account_on_payment_save(instance, created):
                     reason = f"Payment amount updated from {instance._original_amount} to {instance.amount}"
 
         instance.account.save(update_fields=['balance'])
-        instance._history_change_reason = getattr(instance, '_change_reason', reason)
-        logger.info(f"[Account] Payment #{instance.pk} processed. Reason: {instance._history_change_reason}")
+        instance._change_reason = getattr(instance, '_change_reason', reason)
+        logger.info(f"[Account] Payment #{instance.pk} processed. Reason: {instance._change_reason}")
 
 
 def update_payable_object_on_payment_save(instance, created):
@@ -111,8 +111,8 @@ def update_payable_object_on_payment_save(instance, created):
 
                     reason = f"Payable #{payable.pk} adjusted by {delta}"
 
-        instance._history_change_reason = getattr(instance, '_change_reason', reason)
-        logger.info(f"[Payable] Payment #{instance.pk} processed. Reason: {instance._history_change_reason}")
+        instance._change_reason = getattr(instance, '_change_reason', reason)
+        logger.info(f"[Payable] Payment #{instance.pk} processed. Reason: {instance._change_reason}")
 
 
 def handle_payment_delete(instance):
@@ -137,5 +137,5 @@ def handle_payment_delete(instance):
             payable.paid_amount -= instance.amount
             payable.save(update_fields=['paid_amount'])
 
-        instance._history_change_reason = f"Payment #{instance.pk} deleted, reverted changes"
-        logger.info(f"[Delete] Payment #{instance.pk} deleted. Reason: {instance._history_change_reason}")
+        instance._change_reason = f"Payment #{instance.pk} deleted, reverted changes"
+        logger.info(f"[Delete] Payment #{instance.pk} deleted. Reason: {instance._change_reason}")
