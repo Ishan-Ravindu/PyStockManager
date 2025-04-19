@@ -128,6 +128,9 @@ LOGGING = {
 SIMPLE_HISTORY_REVERT_DISABLED = True
 
 UNFOLD = {
+    "SITE_TITLE": "MS Sports",
+    "SITE_HEADER": "MS Sports",
+    "SITE_SUBHEADER": "Play Genuine Pay Less",
     "SIDEBAR": {
         "navigation": [
             # Main Dashboard Section
