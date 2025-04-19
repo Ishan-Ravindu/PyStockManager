@@ -59,7 +59,7 @@ class PaymentForm(forms.ModelForm):
                 cleaned_data['object_id'] = expense.id
         if not content_type:
             raise ValidationError({
-                'content_type': 'Please select a content type'
+                'content_type': 'Please select a paymet type'
             })
         
         return cleaned_data
