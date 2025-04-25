@@ -20,5 +20,8 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     history = HistoricalRecords()
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return f'{self.name}'

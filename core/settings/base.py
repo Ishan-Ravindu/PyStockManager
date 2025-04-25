@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from django.urls import reverse_lazy
+from django.templatetags.static import static
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -91,6 +92,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -264,4 +268,9 @@ UNFOLD = {
             },
         ],
     },
+    # hack for avoid this issue(https://github.com/unfoldadmin/django-unfold/issues/1211) 
+    # if issue fixed remove the custom css
+    "STYLES": [
+        lambda request: static("css/styles.css"),
+    ]
 }

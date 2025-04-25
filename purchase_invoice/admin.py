@@ -8,6 +8,7 @@ from utils import invoice_number
 
 class PurchaseInvoiceItemInline(TabularInline):
     model = PurchaseInvoiceItem
+    autocomplete_fields = ['product']
     extra = 0
 
 @admin.register(PurchaseInvoice)
@@ -17,6 +18,7 @@ class PurchaseInvoiceAdmin(SimpleHistoryAdmin, ModelAdmin):
     search_fields = ('supplier__name', 'shop__name')
     readonly_fields = ('total_amount', 'paid_amount', 'created_at')
     inlines = [PurchaseInvoiceItemInline]
+    autocomplete_fields = ['supplier']
     list_per_page = 20
     actions = None
 

@@ -24,6 +24,7 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
     list_filter = ('shop', 'customer', 'created_at')
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'paid_amount', 'created_at')
+    autocomplete_fields = ['customer'] 
     exclude = ('created_at',)
     inlines = [SalesInvoiceItemInline]
     list_per_page = 20
