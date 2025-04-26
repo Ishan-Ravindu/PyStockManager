@@ -5,7 +5,29 @@ from django.conf import settings
 from inventory.models.stock import Stock
 
 # Default markup percentage (can be moved to settings.py)
-DEFAULT_MARKUP_PERCENTAGE = getattr(settings, 'DEFAULT_MARKUP_PERCENTAGE', Decimal('0.20'))
+DEFAULT_MARKUP_PERCENTAGE = 0
+
+def update_selling_price(stock, logger):
+    """
+    Update the selling price based on the product's profit margin.
+    If profit margin is not set, use 0.
+    
+    Args:
+        stock: The Stock instance
+        logger: Logger instance for recording operations
+    """
+    try:
+        # Update selling price based on the product's profit margin
+        # Convert percentage (like 30%) to decimal (0.3) for calculation
+        profit_margin_decimal = stock.product.profit_margin / 100
+        stock.selling_price = stock.average_cost * (Decimal('1.0') + profit_margin_decimal)
+        logger.info(f"Updated selling price for product {stock.product} to {stock.selling_price} "
+                   f"based on profit margin {stock.product.profit_margin}%")
+    except AttributeError:
+        # Use 0 as profit margin if product doesn't have profit_margin
+        stock.selling_price = stock.average_cost
+        logger.info(f"Updated selling price for product {stock.product} to {stock.selling_price} "
+                   f"using zero markup as profit margin is not set")
 
 def capture_original_item_data(instance, logger):
     """
@@ -62,6 +84,8 @@ def process_purchase_item_creation(instance, logger):
             # Prevent division by zero
             if new_total_quantity > 0:
                 stock.average_cost = (old_value + new_value) / new_total_quantity
+                # Update selling price when average cost changes
+                update_selling_price(stock, logger)
             else:
                 # If somehow we end up with zero quantity, keep the existing average cost
                 logger.warning(f"Attempted division by zero in average cost calculation for "
@@ -71,15 +95,27 @@ def process_purchase_item_creation(instance, logger):
             stock.save()
             logger.info(f"Updated existing stock for product {product} at shop {shop}. "
                        f"New quantity: {new_total_quantity}, "
-                       f"New average cost: {stock.average_cost}")
+                       f"New average cost: {stock.average_cost}, "
+                       f"New selling price: {stock.selling_price}")
         except Stock.DoesNotExist:
-            # Create with configurable markup
+            # Create new stock with selling price based on profit margin
+            try:
+                # Try to use product's profit margin
+                profit_margin = product.profit_margin
+                selling_price = instance.price * (Decimal('1.0') + profit_margin)
+                logger.info(f"Using product's profit margin {profit_margin} for new stock")
+            except AttributeError:
+                # Fallback to default markup
+                profit_margin = DEFAULT_MARKUP_PERCENTAGE
+                selling_price = instance.price * (Decimal('1.0') + DEFAULT_MARKUP_PERCENTAGE)
+                logger.info(f"Using default markup {DEFAULT_MARKUP_PERCENTAGE} for new stock")
+                
             new_stock = Stock.objects.create(
                 shop=shop,
                 product=product,
                 quantity=instance.quantity,
                 average_cost=instance.price,
-                selling_price=instance.price * (Decimal('1.0') + DEFAULT_MARKUP_PERCENTAGE)
+                selling_price=selling_price
             )
             logger.info(f"Created new stock record for product {product} at shop {shop}. "
                        f"Quantity: {new_stock.quantity}, "
@@ -149,6 +185,8 @@ def process_purchase_item_update(instance, logger):
                         # Only update average cost if the math works out
                         if new_total_value > 0:
                             original_stock.average_cost = new_total_value / new_quantity
+                            # Update selling price when average cost changes
+                            update_selling_price(original_stock, logger)
                         # If new_total_value <= 0, keep the current average_cost
                     
                     # Update the quantity
@@ -160,7 +198,8 @@ def process_purchase_item_update(instance, logger):
                     logger.info(f"Adjusted original stock for product change: "
                                f"product {original_product}, shop {original_shop}, "
                                f"removed {instance._original_quantity} units, "
-                               f"new avg cost: {original_stock.average_cost}")
+                               f"new avg cost: {original_stock.average_cost}, "
+                               f"new selling price: {original_stock.selling_price}")
                 except (Stock.DoesNotExist, AttributeError) as e:
                     logger.warning(f"Error adjusting original stock: {str(e)}")
                 
@@ -175,6 +214,8 @@ def process_purchase_item_update(instance, logger):
                     
                     if new_total_quantity > 0:
                         new_stock.average_cost = (old_value + new_value) / new_total_quantity
+                        # Update selling price when average cost changes
+                        update_selling_price(new_stock, logger)
                     
                     new_stock.quantity = new_total_quantity
                     new_stock.save()
@@ -182,21 +223,35 @@ def process_purchase_item_update(instance, logger):
                     logger.info(f"Updated stock for new product/shop: "
                                f"product {product}, shop {shop}, "
                                f"added {instance.quantity} units, "
-                               f"new avg cost: {new_stock.average_cost}")
+                               f"new avg cost: {new_stock.average_cost}, "
+                               f"new selling price: {new_stock.selling_price}")
                 except Stock.DoesNotExist:
-                    # Create with configurable markup
+                    # Create with selling price based on profit margin
+                    try:
+                        # Try to use product's profit margin
+                        profit_margin = product.profit_margin
+                        selling_price = instance.price * (Decimal('1.0') + profit_margin)
+                        logger.info(f"Using product's profit margin {profit_margin} for new stock")
+                    except AttributeError:
+                        # Fallback to default markup
+                        profit_margin = DEFAULT_MARKUP_PERCENTAGE
+                        selling_price = instance.price * (Decimal('1.0') + DEFAULT_MARKUP_PERCENTAGE)
+                        logger.info(f"Using default markup {DEFAULT_MARKUP_PERCENTAGE} for new stock")
+                    
                     new_stock = Stock.objects.create(
                         shop=shop,
                         product=product,
                         quantity=instance.quantity,
                         average_cost=instance.price,
-                        selling_price=instance.price * (Decimal('1.0') + DEFAULT_MARKUP_PERCENTAGE)
+                        selling_price=selling_price
                     )
-                    logger.info(f"Created new stock record for product {product} at shop {shop}")
+                    logger.info(f"Created new stock record for product {product} at shop {shop}, "
+                               f"selling price: {new_stock.selling_price}")
             else:
                 # Just a quantity or price change on the same product/shop
                 try:
                     stock = Stock.objects.get(shop=shop, product=product)
+                    average_cost_changed = False
                     
                     # Case 1: Only quantity changed
                     if quantity_change != 0 and not price_changed:
@@ -208,6 +263,7 @@ def process_purchase_item_update(instance, logger):
                             
                             if new_total_quantity > 0:
                                 stock.average_cost = (old_value + additional_value) / new_total_quantity
+                                average_cost_changed = True
                         else:
                             # For reduced quantity, we need to be careful
                             # If the price at which units were "removed" is different from
@@ -221,6 +277,7 @@ def process_purchase_item_update(instance, logger):
                                 if instance.price != stock.average_cost:
                                     new_total_value = old_value - removed_value
                                     stock.average_cost = new_total_value / new_total_quantity
+                                    average_cost_changed = True
                         
                         stock.quantity = new_total_quantity
                         
@@ -236,6 +293,7 @@ def process_purchase_item_update(instance, logger):
                         
                         if stock.quantity > 0:
                             stock.average_cost = adjusted_value / stock.quantity
+                            average_cost_changed = True
                     
                     # Case 3: Both price and quantity changed
                     elif price_changed and quantity_change != 0:
@@ -253,8 +311,13 @@ def process_purchase_item_update(instance, logger):
                         
                         if new_total_quantity > 0:
                             stock.average_cost = adjusted_value / new_total_quantity
+                            average_cost_changed = True
                         
                         stock.quantity = new_total_quantity
+                    
+                    # Update selling price if average cost changed
+                    if average_cost_changed:
+                        update_selling_price(stock, logger)
                     
                     # Safety check to prevent negative quantities
                     if stock.quantity < 0:
@@ -263,7 +326,8 @@ def process_purchase_item_update(instance, logger):
                     
                     stock.save()
                     logger.info(f"Updated stock for product {product} at shop {shop}, "
-                               f"new quantity: {stock.quantity}, new avg cost: {stock.average_cost}")
+                               f"new quantity: {stock.quantity}, new avg cost: {stock.average_cost}, "
+                               f"new selling price: {stock.selling_price}")
                 except Stock.DoesNotExist:
                     logger.warning(f"No stock record found for product {product} at shop {shop}")
         except Exception as e:
@@ -288,6 +352,7 @@ def process_purchase_item_deletion(instance, logger):
         
         try:
             stock = Stock.objects.get(shop=shop, product=product)
+            average_cost_changed = False
             
             # Calculate the value that needs to be removed
             item_value = instance.price * instance.quantity
@@ -304,10 +369,15 @@ def process_purchase_item_deletion(instance, logger):
                 # Only update average cost if the math works out
                 if new_total_value > 0:
                     stock.average_cost = new_total_value / new_quantity
+                    average_cost_changed = True
                 # If new_total_value <= 0, keep the current average_cost
             
             # Update the quantity
             stock.quantity = new_quantity
+            
+            # Update selling price if average cost changed
+            if average_cost_changed:
+                update_selling_price(stock, logger)
             
             # Ensure quantity doesn't go below 0
             if stock.quantity < 0:
@@ -316,7 +386,8 @@ def process_purchase_item_deletion(instance, logger):
                 
             stock.save()
             logger.info(f"Updated stock after item deletion: product {product}, shop {shop}, "
-                       f"quantity: {stock.quantity}, avg cost: {stock.average_cost}")
+                       f"quantity: {stock.quantity}, avg cost: {stock.average_cost}, "
+                       f"selling price: {stock.selling_price}")
         except Stock.DoesNotExist:
             logger.warning(f"No stock record found for product {product} at shop {shop}")
             
