@@ -3,6 +3,8 @@ from django.utils.html import format_html
 from django.db.models import Sum
 from django.urls import reverse
 from django.template.loader import render_to_string
+from unfold.contrib.import_export.forms import ExportForm, ImportForm
+from import_export.admin import ImportExportModelAdmin
 
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
@@ -12,7 +14,7 @@ from inventory.admin.filters import QuantityRangeFilter, PriceComparisonFilter
 
 
 @admin.register(Stock)
-class StockAdmin(SimpleHistoryAdmin, ModelAdmin):
+class StockAdmin(SimpleHistoryAdmin, ModelAdmin, ImportExportModelAdmin):
     list_display = ('product_with_shops',)
     list_filter = (
         'product',
@@ -28,6 +30,8 @@ class StockAdmin(SimpleHistoryAdmin, ModelAdmin):
     )
     list_per_page = 20
     list_display_links = None  
+    import_form_class = ImportForm
+    export_form_class = ExportForm
 
     def has_change_permission(self, request, obj=None):
         return False
