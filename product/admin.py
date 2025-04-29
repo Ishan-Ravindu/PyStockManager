@@ -88,7 +88,8 @@ class ProductAdminForm(forms.ModelForm):
 class ProductAdmin(SimpleHistoryAdmin, ModelAdmin, ImportExportModelAdmin):
     form = ProductAdminForm
     list_display = ('name', 'category', 'description', 'profit_margin')
-    search_fields = ('name', 'description')
+    search_fields = ('name', 'description', 'category')
+    list_filter = ('category', 'profit_margin',)
     fields = ('name', 'description', 'category', 'profit_margin')
     list_per_page = 20
     import_form_class = ImportForm
