@@ -69,24 +69,6 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
         
         super().save_model(request, obj, form, change)
     
-    def save_related(self, request, form, formsets, change):
-        items_count = 0
-        for formset in formsets:
-            if formset.model == SalesInvoiceItem:
-                for item_form in formset.forms:
-                    if (item_form.is_valid() and 
-                        not item_form.cleaned_data.get('DELETE', False) and
-                        item_form.cleaned_data.get('product') and 
-                        item_form.cleaned_data.get('quantity')):
-                        items_count += 1
-        try:
-            InvoiceValidator.validate_has_items(items_count)
-        except ValidationError as e:
-            self.display_error(request, str(e))
-            return
-            
-        super().save_related(request, form, formsets, change)
-    
     def response_change(self, request, obj):
         if not InvoiceService.can_edit_invoice(obj):
             return redirect(reverse('admin:inventory_salesinvoice_changelist'))
