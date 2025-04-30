@@ -240,14 +240,6 @@
             <div class="header-right">
                 <div class="document-title">INVOICE</div>
                 <div class="document-number"># {{ invoice.id }}</div>
-                {% if invoice.get_due_amount == 0 %}
-                <div class="status-paid">PAID</div>
-                {% elif invoice.paid_amount > 0 %}
-                <div class="status-partial">PARTIALLY PAID</div>
-                {% else %}
-                <div class="status-unpaid">UNPAID</div>
-                {% endif %}
-            </div>
         </div>
 
         <div class="two-column">
