@@ -12,10 +12,6 @@ class AccountAdmin(SimpleHistoryAdmin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-
 @admin.register(Withdraw)
 class WithdrawAdmin(SimpleHistoryAdmin, ModelAdmin):
     list_display = ('account', 'amount', 'withdrawn_at')
