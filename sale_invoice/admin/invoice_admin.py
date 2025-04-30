@@ -7,6 +7,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.shortcuts import redirect
 
+from sale_invoice.admin.payment_status_filter import PaymentStatusFilter
 from sale_invoice.models import SalesInvoice, SalesInvoiceItem
 from utils import invoice_number
 from .forms import SalesInvoiceForm
@@ -21,7 +22,8 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
     list_display = ('get_created_at', 'shop_code_and_id', 'customer', 'total_amount', 'paid_amount', 
                    'average_cost', 'profit', 'due_date', 'payment_status', 'add_receipt_button', 'view_receipts', 
                    'view_invoice_pdf')
-    list_filter = ('shop', 'customer', 'created_at')
+    list_filter = ('shop', PaymentStatusFilter)
+    date_hierarchy = 'created_at'
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'paid_amount', 'created_at')
     autocomplete_fields = ['customer'] 
