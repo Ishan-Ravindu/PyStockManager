@@ -26,14 +26,13 @@ class SalesInvoiceForm(forms.ModelForm):
                 CustomerValidator.validate_due_date(due_date, customer, today)
             except forms.ValidationError as e:
                 self.add_error('due_date', e)
-        if self.instance.pk:
-                    items_count = self.instance.salesinvoiceitem_set.count()
-        else:
-            items_count =  0
-            try:
-                InvoiceValidator.validate_has_items(items_count)
-            except forms.ValidationError as e:
-                self.add_error(None, e)
+        # if self.instance.pk:
+        #             items_count = self.instance.salesinvoiceitem_set.count() or 0
+        # else:
+        #     try:
+        #         InvoiceValidator.validate_has_items(items_count)
+        #     except forms.ValidationError as e:
+        #         self.add_error(None, e)
 
             return cleaned_data
 
