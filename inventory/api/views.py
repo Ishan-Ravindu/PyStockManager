@@ -38,3 +38,42 @@ class StockAPI(APIView):
             # Convert to {product_id: quantity} format for frontend
             data = {item['product_id']: item for item in serializer.data}
             return Response(data)
+        
+class InventoryValueAPI(APIView):
+    """
+    API to get total inventory value information for all products (average_cost * quantity)
+    """
+    def get(self, request):
+        shop_id = request.query_params.get('shop_id')
+        
+        if not shop_id:
+            return Response(
+                {'error': 'shop_id parameter is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Get all products for the shop
+        stocks = Stock.objects.filter(shop_id=shop_id).select_related('product')
+        
+        # Calculate total inventory value
+        total_value = sum(stock.average_cost * stock.quantity for stock in stocks)
+        
+        # Get individual product inventory values
+        product_values = []
+        for stock in stocks:
+            product_values.append({
+                'product_id': stock.product_id,
+                'product_name': stock.product.name,
+                'quantity': stock.quantity,
+                'average_cost': str(stock.average_cost),
+                'inventory_value': str(stock.average_cost * stock.quantity)
+            })
+        
+        # Group by product category if needed
+        # You can add category grouping logic here if required
+        
+        return Response({
+            'total_inventory_value': str(total_value),
+            'products': product_values,
+            'shop_id': shop_id
+        })

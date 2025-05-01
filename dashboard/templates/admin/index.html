@@ -58,6 +58,10 @@
     .receivable {
         color: #28a745;
     }
+    
+    .inventory {
+        color: #6610f2;
+    }
 </style>
 
 <div class="dashboard-container">
@@ -73,29 +77,49 @@
         <h3>Total Receivables</h3>
         <p id="total-receivables" class="receivable">Loading...</p>
     </div>
+    <div class="dashboard-card">
+        <h3>Inventory Value(ZIM)</h3>
+        <p id="total-inventory" class="inventory">Loading...</p>
+    </div>
 </div>
 
 <script>
     async function fetchSummaryData() {
         try {
-            const [balanceRes, payableRes, receivableRes] = await Promise.all([
+            const [balanceRes, payableRes, receivableRes, inventoryRes] = await Promise.all([
                 fetch('/api/account/total-balance/'),
                 fetch('/api/purchase_invoice/total-payable/'),
-                fetch('/api/sale_invoice/total-receivables/')
+                fetch('/api/sale_invoice/total-receivables/'),
+                fetch('/api/inventory/inventory-value/?shop_id=2')
             ]);
 
             const balanceData = await balanceRes.json();
             const payableData = await payableRes.json();
             const receivableData = await receivableRes.json();
+            const inventoryData = await inventoryRes.json();
 
-            document.getElementById('total-balance').textContent = balanceData.total_balance;
-            document.getElementById('total-payable').textContent = payableData.total_payable;
-            document.getElementById('total-receivables').textContent = receivableData.total_receivables;
+            // Format numbers with commas for thousands
+            const formatNumber = (value) => {
+                // Check if value is a string that can be parsed as a number
+                if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+                    return parseFloat(value).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                }
+                return value; // Return original value if not a valid number
+            };
+            
+            document.getElementById('total-balance').textContent = formatNumber(balanceData.total_balance);
+            document.getElementById('total-payable').textContent = formatNumber(payableData.total_payable);
+            document.getElementById('total-receivables').textContent = formatNumber(receivableData.total_receivables);
+            document.getElementById('total-inventory').textContent = formatNumber(inventoryData.total_inventory_value);
         } catch (error) {
             console.error("Error fetching dashboard data", error);
             document.getElementById('total-balance').textContent = "Error";
             document.getElementById('total-payable').textContent = "Error";
             document.getElementById('total-receivables').textContent = "Error";
+            document.getElementById('total-inventory').textContent = "Error";
         }
     }
 
