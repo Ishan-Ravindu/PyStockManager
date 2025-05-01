@@ -17,7 +17,6 @@ from inventory.admin.filters import QuantityRangeFilter, PriceComparisonFilter
 class StockAdmin(SimpleHistoryAdmin, ModelAdmin, ImportExportModelAdmin):
     list_display = ('product_with_shops',)
     list_filter = (
-        'product',
         'shop',
         QuantityRangeFilter,
         PriceComparisonFilter,

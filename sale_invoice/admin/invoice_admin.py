@@ -23,7 +23,6 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
                    'average_cost', 'profit', 'due_date', 'payment_status', 'add_receipt_button', 'view_receipts', 
                    'view_invoice_pdf')
     list_filter = ('shop', PaymentStatusFilter)
-    date_hierarchy = 'created_at'
     search_fields = ('shop__name', 'customer__name')
     readonly_fields = ('total_amount', 'paid_amount', 'created_at')
     autocomplete_fields = ['customer'] 
