@@ -57,7 +57,7 @@ class SalesInvoice(models.Model):
         total = 0
         for item in self.items.all():
             if item.average_cost is not None:
-                total += item.average_cost
+                total += item.average_cost*item.quantity
         return total
 
     def get_profit(self):
