@@ -26,8 +26,8 @@ class PurchaseInvoiceAdmin(SimpleHistoryAdmin, ModelAdmin):
         return  invoice_number(obj.shop.code, obj.id)
     shop_code_and_id.short_description = 'Invoice ID'
     shop_code_and_id.admin_order_field = 'id'
-    # if this need to change must be handle signal properly for shop change
+    # if this need to change must be handle signal properly for shop change and supplier change
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return  ('shop',) + self.readonly_fields 
+            return  ('supplier', 'shop',) + self.readonly_fields 
         return self.readonly_fields

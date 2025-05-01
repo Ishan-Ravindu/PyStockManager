@@ -30,6 +30,11 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
     inlines = [SalesInvoiceItemInline]
     list_per_page = 20
     actions = None
+    # if this need to change must be handle signal properly for shop change and customer change
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return  ('customer', 'shop',) + self.readonly_fields 
+        return self.readonly_fields
 
     class Media:
         js = ('sale_invoice/js/sales_invoice_customer.js',)
