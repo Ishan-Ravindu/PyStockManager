@@ -37,7 +37,7 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
         return self.readonly_fields
 
     class Media:
-        js = ('sale_invoice/js/sales_invoice_customer.js',)
+        js = ('sale_invoice/js/sales_invoice_customer.js', 'sale_invoice/js/sales_invoice_total_calculator.js')
 
     def shop_code_and_id(self, obj):
         return  invoice_number(obj.shop.code, obj.id)
