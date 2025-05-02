@@ -202,6 +202,7 @@
         justify-content: center;
         margin-top: 20px;
         gap: 10px;
+        align-items: center;
     }
     
     .pagination-button {
@@ -219,6 +220,22 @@
     }
     
     .pagination-button:hover:not(.active) {
+        background-color: #f8f9fa;
+    }
+    
+    .pagination select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fff;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        margin-left: 10px;
+    }
+    
+    .pagination select:hover {
         background-color: #f8f9fa;
     }
     
@@ -303,7 +320,11 @@
     let allShops = [];
     let allInventoryData = [];
     let currentPage = 1;
-    const itemsPerPage = 20;
+    let itemsPerPage = 30; // Default page size
+    let currentSort = {
+        column: 'shop_name', // default sort column
+        order: 'asc'        // default sort order
+    };
     
     // Function to switch between tabs
     function switchTab(shopId) {
@@ -320,6 +341,9 @@
         // Activate selected tab and content
         document.querySelector(`.tab[data-shop-id="${shopId}"]`).classList.add('active');
         document.getElementById(`content-${shopId}`).classList.add('active');
+        
+        // Reset to first page when switching tabs
+        currentPage = 1;
     }
 
     // Function to format numbers with commas for thousands
@@ -362,7 +386,7 @@
     
     // Function to create pagination
     function createPagination(totalItems, currentPage, containerId) {
-        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const totalPages = itemsPerPage > 0 ? Math.ceil(totalItems / itemsPerPage) : 1;
         const paginationContainer = document.getElementById(containerId);
         paginationContainer.innerHTML = '';
         
@@ -399,6 +423,31 @@
             nextButton.onclick = () => goToPage(currentPage + 1, containerId);
             paginationContainer.appendChild(nextButton);
         }
+        
+        // Add page size selector
+        const pageSizeSelect = document.createElement('select');
+        pageSizeSelect.className = 'pagination-button';
+        pageSizeSelect.innerHTML = `
+            <option value="20" ${itemsPerPage === 20 ? 'selected' : ''}>20</option>
+            <option value="30" ${itemsPerPage === 30 ? 'selected' : ''}>30</option>
+            <option value="50" ${itemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${itemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="0" ${itemsPerPage === 0 ? 'selected' : ''}>ALL</option>
+        `;
+        pageSizeSelect.value = itemsPerPage;
+        pageSizeSelect.onchange = function() {
+            itemsPerPage = parseInt(this.value) || 0; // 0 means show all
+            currentPage = 1;
+            const shopId = containerId.replace('-pagination', '');
+            
+            if (shopId === 'all') {
+                displayAllInventory(filterAllInventory());
+            } else {
+                const shopInventory = filterShopInventory(shopId);
+                displayShopInventory(shopId, shopInventory);
+            }
+        };
+        paginationContainer.appendChild(pageSizeSelect);
     }
     
     // Function to go to a specific page
@@ -416,6 +465,9 @@
     
     // Function to sort table
     function sortTable(tableId, sortBy, order = 'asc') {
+        currentSort.column = sortBy;
+        currentSort.order = order;
+        
         const table = document.getElementById(tableId);
         const headerCells = table.querySelectorAll('th');
         
@@ -426,43 +478,19 @@
         
         // Set the active sort header
         const activeHeader = table.querySelector(`th[data-sort="${sortBy}"]`);
-        activeHeader.classList.add(order === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        if (activeHeader) {
+            activeHeader.classList.add(order === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        }
         
         // Determine which inventory to sort
         const shopId = tableId.replace('-inventory-table', '');
-        let dataToSort;
         
         if (shopId === 'all') {
-            dataToSort = filterAllInventory();
+            const filteredData = filterAllInventory();
+            displayAllInventory(filteredData);
         } else {
-            dataToSort = filterShopInventory(shopId);
-        }
-        
-        // Sort the data
-        dataToSort.sort((a, b) => {
-            let valueA = a[sortBy];
-            let valueB = b[sortBy];
-            
-            // Handle numeric values
-            if (!isNaN(parseFloat(valueA)) && !isNaN(parseFloat(valueB))) {
-                valueA = parseFloat(valueA);
-                valueB = parseFloat(valueB);
-            } else if (typeof valueA === 'string' && typeof valueB === 'string') {
-                // Case-insensitive string comparison
-                valueA = valueA.toLowerCase();
-                valueB = valueB.toLowerCase();
-            }
-            
-            if (valueA < valueB) return order === 'asc' ? -1 : 1;
-            if (valueA > valueB) return order === 'asc' ? 1 : -1;
-            return 0;
-        });
-        
-        // Display the sorted data
-        if (shopId === 'all') {
-            displayAllInventory(dataToSort);
-        } else {
-            displayShopInventory(shopId, dataToSort);
+            const shopInventory = filterShopInventory(shopId);
+            displayShopInventory(shopId, shopInventory);
         }
     }
     
@@ -475,7 +503,7 @@
         const maxValue = document.getElementById('all-filter-max-value').value;
         
         return allInventoryData.filter(item => {
-            const matchesProduct = !productFilter || item.product_name.toLowerCase().includes(productFilter);
+            const matchesProduct = !productFilter || (item.product_name && item.product_name.toLowerCase().includes(productFilter));
             const matchesMinQty = !minQty || item.quantity >= parseInt(minQty);
             const matchesMaxQty = !maxQty || item.quantity <= parseInt(maxQty);
             const matchesMinValue = !minValue || parseFloat(item.inventory_value) >= parseFloat(minValue);
@@ -496,7 +524,7 @@
         return allInventoryData.filter(item => {
             if (item.shop_id !== shopId) return false;
             
-            const matchesProduct = !productFilter || item.product_name.toLowerCase().includes(productFilter);
+            const matchesProduct = !productFilter || (item.product_name && item.product_name.toLowerCase().includes(productFilter));
             const matchesMinQty = !minQty || item.quantity >= parseInt(minQty);
             const matchesMaxQty = !maxQty || item.quantity <= parseInt(maxQty);
             const matchesMinValue = !minValue || parseFloat(item.inventory_value) >= parseFloat(minValue);
@@ -508,10 +536,30 @@
     
     // Function to display all inventory data with pagination
     function displayAllInventory(filteredData) {
+        // Apply current sort
+        filteredData.sort((a, b) => {
+            let valueA = a[currentSort.column];
+            let valueB = b[currentSort.column];
+            
+            // Handle numeric values
+            if (!isNaN(parseFloat(valueA)) && !isNaN(parseFloat(valueB))) {
+                valueA = parseFloat(valueA);
+                valueB = parseFloat(valueB);
+            } else if (typeof valueA === 'string' && typeof valueB === 'string') {
+                // Case-insensitive string comparison
+                valueA = valueA.toLowerCase();
+                valueB = valueB.toLowerCase();
+            }
+            
+            if (valueA < valueB) return currentSort.order === 'asc' ? -1 : 1;
+            if (valueA > valueB) return currentSort.order === 'asc' ? 1 : -1;
+            return 0;
+        });
+        
         const totalItems = filteredData.length;
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = Math.min(start + itemsPerPage, totalItems);
-        const paginatedData = filteredData.slice(start, end);
+        const start = itemsPerPage > 0 ? (currentPage - 1) * itemsPerPage : 0;
+        const end = itemsPerPage > 0 ? Math.min(start + itemsPerPage, totalItems) : totalItems;
+        const paginatedData = itemsPerPage > 0 ? filteredData.slice(start, end) : filteredData;
         
         const tbody = document.getElementById('all-inventory-body');
         
@@ -522,7 +570,17 @@
         }
         
         // Update all shops summary
-        updateAllShopsSummary(allInventoryData);
+        updateAllShopsSummary(filteredData);
+        
+        // Update sort indicators
+        const table = document.getElementById('all-inventory-table');
+        const headerCells = table.querySelectorAll('th');
+        headerCells.forEach(cell => {
+            cell.classList.remove('sorted-asc', 'sorted-desc');
+            if (cell.dataset.sort === currentSort.column) {
+                cell.classList.add(`sorted-${currentSort.order}`);
+            }
+        });
         
         createPagination(totalItems, currentPage, 'all-pagination');
     }
@@ -543,10 +601,30 @@
     
     // Function to display shop inventory data with pagination
     function displayShopInventory(shopId, filteredData) {
+        // Apply current sort
+        filteredData.sort((a, b) => {
+            let valueA = a[currentSort.column];
+            let valueB = b[currentSort.column];
+            
+            // Handle numeric values
+            if (!isNaN(parseFloat(valueA)) && !isNaN(parseFloat(valueB))) {
+                valueA = parseFloat(valueA);
+                valueB = parseFloat(valueB);
+            } else if (typeof valueA === 'string' && typeof valueB === 'string') {
+                // Case-insensitive string comparison
+                valueA = valueA.toLowerCase();
+                valueB = valueB.toLowerCase();
+            }
+            
+            if (valueA < valueB) return currentSort.order === 'asc' ? -1 : 1;
+            if (valueA > valueB) return currentSort.order === 'asc' ? 1 : -1;
+            return 0;
+        });
+        
         const totalItems = filteredData.length;
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = Math.min(start + itemsPerPage, totalItems);
-        const paginatedData = filteredData.slice(start, end);
+        const start = itemsPerPage > 0 ? (currentPage - 1) * itemsPerPage : 0;
+        const end = itemsPerPage > 0 ? Math.min(start + itemsPerPage, totalItems) : totalItems;
+        const paginatedData = itemsPerPage > 0 ? filteredData.slice(start, end) : filteredData;
         
         const tbody = document.getElementById(`${shopId}-inventory-body`);
         
@@ -555,6 +633,16 @@
         } else {
             tbody.innerHTML = paginatedData.map(item => createInventoryRow(item, false)).join('');
         }
+        
+        // Update sort indicators
+        const table = document.getElementById(`${shopId}-inventory-table`);
+        const headerCells = table.querySelectorAll('th');
+        headerCells.forEach(cell => {
+            cell.classList.remove('sorted-asc', 'sorted-desc');
+            if (cell.dataset.sort === currentSort.column) {
+                cell.classList.add(`sorted-${currentSort.order}`);
+            }
+        });
         
         createPagination(totalItems, currentPage, `${shopId}-pagination`);
     }
