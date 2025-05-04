@@ -1,6 +1,8 @@
 from django.forms import ValidationError
 from django.utils import timezone
 
+from inventory.models.stock import Stock
+
 class CustomerValidator:
     @staticmethod
     def validate_blacklist(customer):
@@ -24,15 +26,33 @@ class InventoryValidator:
     @staticmethod
     def validate_stock_quantity(product, quantity, shop):
         if not all([product, quantity, shop]):
-            return
+            return        
         try:
-            stock = product.stock_set.get(shop=shop)
+            stock = product.stock_set.get(shop=shop)            
             if quantity > stock.quantity:
                 raise ValidationError(
-                    f"Quantity cannot exceed available stock ({stock.quantity})."
+                    f"Quantity {quantity} exceeds available stock {stock.quantity} for {product.name} in {shop.name}."
                 )
         except product.stock_set.model.DoesNotExist:
-            raise ValidationError(f"No stock available for this product in {shop.name}.")
+            raise ValidationError(f"No stock available for {product.name} in {shop.name}.")
+        except Exception as e:
+            raise ValidationError(f"{str(e)}")
+        
+    @staticmethod
+    def validate_price_not_below_selling_price(self, product, price, shop):
+        """
+        Validate that the invoice price isn't below the product's selling price.
+        This would be implemented in your InventoryValidator class.
+        """
+        try:
+            stock = Stock.objects.get(shop=shop, product=product)
+            if price < stock.selling_price:
+                raise ValidationError(
+                    f"Price ({price}) cannot be lower than the product's selling price ({stock.selling_price})"
+                )
+        except Stock.DoesNotExist:
+            pass
+            # raise ValidationError(f"No stock available for {product.name} in {shop.name}.")
 
 class InvoiceValidator:
     @staticmethod
