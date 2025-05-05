@@ -4,7 +4,7 @@
             <th style="border: 1px solid #ddd; padding: 8px; text-align: left; width: 25%;">Product</th>
             <th style="border: 1px solid #ddd; padding: 8px; text-align: left; width: 25%;">Shop Code</th>
             <th style="border: 1px solid #ddd; padding: 8px; text-align: right; width: 15%;">Quantity</th>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: right; width: 15%;">Avg Cost</th>
+            {% comment %} <th style="border: 1px solid #ddd; padding: 8px; text-align: right; width: 15%;">Avg Cost</th> {% endcomment %}
             <th style="border: 1px solid #ddd; padding: 8px; text-align: right; width: 20%;">Min Selling Price</th>
         </tr>
     </thead>
@@ -20,9 +20,9 @@
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: right; {% if stock.quantity <= 0 %}color: red;{% endif %}">
                     {{ stock.quantity|default:0 }}
                 </td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">
+                {% comment %} <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">
                     {{ stock.average_cost|default:0|floatformat:2 }}
-                </td>
+                </td> {% endcomment %}
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: right; color:
                     {% if stock.selling_price > stock.average_cost %}
                         green
@@ -41,7 +41,7 @@
             <td style="border: 1px solid #ddd; padding: 8px; text-align: right; {% if total_quantity <= 0 %}color: red;{% endif %}">
                 {{ total_quantity|default:0 }}
             </td>
-            <td style="border: 1px solid #ddd; padding: 8px;"></td>
+            {% comment %} <td style="border: 1px solid #ddd; padding: 8px;"></td> {% endcomment %}
             <td style="border: 1px solid #ddd; padding: 8px;"></td>
         </tr>
     </tbody>
