@@ -101,6 +101,12 @@ def process_sales_item_creation(instance, logger):
         
         # Update customer credit based on the change in invoice total
         if instance.sales_invoice.customer:
+            # Make sure both values are Decimal before subtraction
+            if not isinstance(original_total, Decimal):
+                original_total = Decimal(str(original_total))
+            if not isinstance(new_total, Decimal):
+                new_total = Decimal(str(new_total))
+                
             # Calculate the change in invoice total
             total_change = new_total - original_total
             
@@ -108,7 +114,6 @@ def process_sales_item_creation(instance, logger):
             instance.sales_invoice.customer.credit += total_change
             instance.sales_invoice.customer.save(update_fields=['credit'])
             logger.info(f"Adjusted credit for customer {instance.sales_invoice.customer} by {total_change}")
-
 
 def process_sales_item_update(instance, logger):
     """

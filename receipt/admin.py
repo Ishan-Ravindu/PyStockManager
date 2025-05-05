@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.contrib import admin
 from django.forms import ModelForm, ValidationError
 from django.urls import reverse
@@ -24,7 +25,7 @@ class ReceiptValidator:
     """Validator class for receipt-related validations"""
     
     @staticmethod
-    def validate_amount(amount, sales_invoice, original_amount=0):
+    def validate_amount(amount, sales_invoice, original_amount=Decimal('0.00')):
         """Validate that receipt amount doesn't exceed remaining unpaid amount"""
         if not all([amount is not None, sales_invoice]):
             return
@@ -50,7 +51,7 @@ class ReceiptForm(ModelForm):
         sales_invoice = cleaned_data.get('sales_invoice')
         
         # Get original amount if editing existing receipt
-        original_amount = 0
+        original_amount = Decimal('0.00')
         if self.instance and self.instance.pk:
             original_amount = self.instance.amount
         
