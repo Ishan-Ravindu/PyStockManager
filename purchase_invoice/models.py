@@ -13,6 +13,11 @@ class PurchaseInvoice(models.Model):
 
     def __str__(self):
         return f"Purchase {self.id} from {self.supplier.name}"
+    
+    class Meta:
+        permissions = [
+            ("can_view_icon_purchase_invoice", "Can view icon purchase invoice"),
+        ]
 
     def update_total_amount(self):
         """Calculate and update total amount from invoice items."""

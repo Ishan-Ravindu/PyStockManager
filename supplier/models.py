@@ -12,6 +12,9 @@ class Supplier(models.Model):
 
     class Meta:
         ordering = ['name']
+        permissions = [
+            ("can_view_icon_supplier", "Can view icon supplier"),
+        ]
 
     def __str__(self):
         return self.name

@@ -11,4 +11,9 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    
+    class Meta:
+        permissions = [
+            ("can_view_icon_expense", "Can view icon expense"),
+        ]
 

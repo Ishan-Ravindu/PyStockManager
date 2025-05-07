@@ -11,6 +11,9 @@ class Stock(models.Model):
 
     class Meta:
         unique_together = ('shop', 'product')
+        permissions = [
+            ("can_view_icon_stock", "Can view icon stock"),
+        ]
 
     def __str__(self):
         return f"{self.shop.name} - {self.product.name} ({self.quantity})"

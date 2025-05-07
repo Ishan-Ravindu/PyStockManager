@@ -13,6 +13,11 @@ class SalesInvoice(models.Model):
     def __str__(self):
         return f"{self.shop.code}#{self.id} - ({self.paid_amount}/{self.total_amount})"
     
+    class Meta:
+        permissions = [
+            ("can_view_icon_sale_invoice", "Can view icon sale invoice"),
+        ]
+    
     def update_total_amount(self):
         """Calculate and update total amount from sales invoice items, considering discounts.
         Both amount and percentage discounts are applied per unit."""

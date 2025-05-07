@@ -18,6 +18,11 @@ class Customer(models.Model):
     def __str__(self):
         return f"{self.name}-({self.mobile_number})"
     
+    class Meta:
+        permissions = [
+            ("can_view_icon_customer", "Can view icon customer"),
+        ]
+    
     def credit_status(self):
         if self.credit_limit <= 0:
             return format_html('<span style="color: green; font-weight: bold;">No Limit Set</span>')

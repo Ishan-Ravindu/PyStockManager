@@ -10,3 +10,8 @@ class Shop(models.Model):
 
     def __str__(self):
         return f"{self.code}"
+    
+    class Meta:
+        permissions = [
+            ("can_view_icon_shop", "Can view icon shop"),
+        ]

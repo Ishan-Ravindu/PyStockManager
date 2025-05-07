@@ -138,138 +138,157 @@ UNFOLD = {
     "SITE_HEADER": "MS Sports",
     "SITE_SUBHEADER": "Play Genuine Pay Less",
     "SIDEBAR": {
-        "navigation": [
-            # Main Dashboard Section
-            {
-                "separator": False,
-                "collapsible": False,
-                "items": [
-                    {
-                        "title": "Dashboard",
-                        "icon": "dashboard",
-                        "link": reverse_lazy("admin:index")
-                    },
-                ],
-            },
-            # Sales & Purchases Section
-            {
-                "separator": True, 
-                "collapsible": False,
-                "title": "Transactions",
-                "items": [
-                    {
-                        "title": "Sales Invoices",
-                        "icon": "receipt_long",
-                        "link": reverse_lazy("admin:sale_invoice_salesinvoice_changelist")
-                    },
-                    {
-                        "title": "Purchase Invoices",
-                        "icon": "shopping_cart",
-                        "link": reverse_lazy("admin:purchase_invoice_purchaseinvoice_changelist")
-                    },
-                ],
-            },
-            # Financial Section
-            {
-                "separator": True,
-                "collapsible": False,
-                "title": "Finance",
-                "items": [
-                    {
-                        "title": "Accounts",
-                        "icon": "credit_card",
-                        "link": reverse_lazy("admin:account_account_changelist")
-                    },
-                    {
-                        "title": "Expenses",
-                        "icon": "money",
-                        "link": reverse_lazy("admin:expense_expense_changelist")
-                    },
-                    {
-                        "title": "Withdrawals",
-                        "icon": "money_off",
-                        "link": reverse_lazy("admin:account_withdraw_changelist"),
-                    },
-                    {
-                        "title": "Account Transfers",
-                        "icon": "swap_horiz",
-                        "link": reverse_lazy("admin:account_accounttransfer_changelist")
-                    },
-                    {
-                        "title": "Payments",
-                        "icon": "payments",
-                        "link": reverse_lazy("admin:payment_payment_changelist")
-                    },
-                    {
-                        "title": "Receipts",
-                        "icon": "receipt",
-                        "link": reverse_lazy("admin:receipt_receipt_changelist")
-                    },
-                ],
-            },
-            # Inventory & Products Section
-            {
-                "separator": True,
-                "collapsible": False,
-                "title": "Inventory",
-                "items": [
-                    {
-                        "title": "Products",
-                        "icon": "inventory_2",
-                        "link": reverse_lazy("admin:product_product_changelist")
-                    },
-                    {
-                        "title": "Categories",
-                        "icon": "category",
-                        "link": reverse_lazy("admin:product_category_changelist")
-                    },
-                    {
-                        "title": "Stock",
-                        "icon": "inventory",
-                        "link": reverse_lazy("admin:inventory_stock_changelist")
-                    },
-                    {
-                        "title": "Stock Transfers",
-                        "icon": "swap_vert",
-                        "link": reverse_lazy("admin:inventory_stocktransfer_changelist")
-                    },
-                    {
-                        "title": "Shops",
-                        "icon": "store",
-                        "link": reverse_lazy("admin:shop_shop_changelist")
-                    },
-                ],
-            },
-            # People Section
-            {
-                "separator": True,
-                "collapsible": False,
-                "title": "People",
-                "items": [
-                    {
-                        "title": "Customers",
-                        "icon": "people",
-                        "link": reverse_lazy("admin:customer_customer_changelist")
-                    },
-                    {
-                        "title": "Suppliers",
-                        "icon": "local_shipping",
-                        "link": reverse_lazy("admin:supplier_supplier_changelist")
-                    },
-                    {
-                        "title": "Users",
-                        "icon": "admin_panel_settings",
-                        "link": reverse_lazy("admin:auth_user_changelist"),
-                    },
-                    {
-                        "title": "Groups",
-                        "icon": "group_work",
-                        "link": reverse_lazy("admin:auth_group_changelist"),
-                    },
-                ],
-            },
-        ],
-    },
+    "navigation": [
+        # Main Dashboard Section
+        {
+            "separator": False,
+            "collapsible": False,
+            "items": [
+                {
+                    "title": "Dashboard",
+                    "icon": "dashboard",
+                    "link": reverse_lazy("admin:index"),
+                    "permission": lambda request: request.user.is_superuser,
+                },
+            ],
+        },
+        # Sales & Purchases Section
+        {
+            "separator": True, 
+            "collapsible": False,
+            "title": "Transactions",
+            "items": [
+                {
+                    "title": "Sales Invoices",
+                    "icon": "receipt_long",
+                    "link": reverse_lazy("admin:sale_invoice_salesinvoice_changelist"),
+                    "permission": lambda request: request.user.has_perm("sale_invoice.can_view_icon_sale_invoice"),
+                },
+                {
+                    "title": "Purchase Invoices",
+                    "icon": "shopping_cart",
+                    "link": reverse_lazy("admin:purchase_invoice_purchaseinvoice_changelist"),
+                    "permission": lambda request: request.user.has_perm("purchase_invoice.can_view_icon_purchase_invoice"),
+                },
+            ],
+        },
+        # Financial Section
+        {
+            "separator": True,
+            "collapsible": False,
+            "title": "Finance",
+            "items": [
+                {
+                    "title": "Accounts",
+                    "icon": "credit_card",
+                    "link": reverse_lazy("admin:account_account_changelist"),
+                    "permission": lambda request: request.user.has_perm("account.can_view_icon_account"),
+                },
+                {
+                    "title": "Expenses",
+                    "icon": "money",
+                    "link": reverse_lazy("admin:expense_expense_changelist"),
+                    "permission": lambda request: request.user.has_perm("expense.can_view_icon_expense"),
+                },
+                {
+                    "title": "Withdrawals",
+                    "icon": "money_off",
+                    "link": reverse_lazy("admin:account_withdraw_changelist"),
+                    "permission": lambda request: request.user.has_perm("withdraw.can_view_icon_withdraw"),
+                },
+                {
+                    "title": "Account Transfers",
+                    "icon": "swap_horiz",
+                    "link": reverse_lazy("admin:account_accounttransfer_changelist"),
+                    "permission": lambda request: request.user.has_perm("account_accounttransfer.can_view_icon_account_account_transfer"),
+                },
+                {
+                    "title": "Payments",
+                    "icon": "payments",
+                    "link": reverse_lazy("admin:payment_payment_changelist"),
+                    "permission": lambda request: request.user.has_perm("payment.can_view_icon_payment"),
+                },
+                {
+                    "title": "Receipts",
+                    "icon": "receipt",
+                    "link": reverse_lazy("admin:receipt_receipt_changelist"),
+                    "permission": lambda request: request.user.has_perm("receipt.can_view_icon_receipt"),
+                },
+            ],
+        },
+        # Inventory & Products Section
+        {
+            "separator": True,
+            "collapsible": False,
+            "title": "Inventory",
+            "items": [
+                {
+                    "title": "Products",
+                    "icon": "inventory_2",
+                    "link": reverse_lazy("admin:product_product_changelist"),
+                    "permission": lambda request: request.user.has_perm("product.can_view_icon_product"),
+                },
+                {
+                    "title": "Categories",
+                    "icon": "category",
+                    "link": reverse_lazy("admin:product_category_changelist"),
+                    "permission": lambda request: request.user.has_perm("category.can_view_icon_category"),
+                },
+                {
+                    "title": "Stock",
+                    "icon": "inventory",
+                    "link": reverse_lazy("admin:inventory_stock_changelist"),
+                    "permission": lambda request: request.user.has_perm("inventory.can_view_icon_stock"),
+                },
+                {
+                    "title": "Stock Transfers",
+                    "icon": "swap_vert",
+                    "link": reverse_lazy("admin:inventory_stocktransfer_changelist"),
+                    "permission": lambda request: request.user.has_perm("inventory.can_view_icon_stock_transfe"),
+                },
+                {
+                    "title": "Shops",
+                    "icon": "store",
+                    "link": reverse_lazy("admin:shop_shop_changelist"),
+                    "permission": lambda request: request.user.has_perm("shop.can_view_icon"),
+                },
+            ],
+        },
+        # People Section
+        {
+            "separator": True,
+            "collapsible": False,
+            "title": "People",
+            "items": [
+                {
+                    "title": "Customers",
+                    "icon": "people",
+                    "link": reverse_lazy("admin:customer_customer_changelist"),
+                    "permission": lambda request: request.user.has_perm("customer.can_view_icon_customer"),
+                },
+                {
+                    "title": "Suppliers",
+                    "icon": "local_shipping",
+                    "link": reverse_lazy("admin:supplier_supplier_changelist"),
+                    "permission": lambda request: request.user.has_perm("supplier.can_view_icon_supplier"),
+                },
+                {
+                    "title": "Users",
+                    "icon": "admin_panel_settings",
+                    "link": reverse_lazy("admin:auth_user_changelist"),
+                    "permission": lambda request: request.user.has_perm("auth.view_user"),
+                },
+                {
+                    "title": "Groups",
+                    "icon": "group_work",
+                    "link": reverse_lazy("admin:auth_group_changelist"),
+                    "permission": lambda request: request.user.has_perm("auth.view_group"),
+                },
+            ],
+        },
+    ],
+},
+
     # hack for avoid this issue(https://github.com/unfoldadmin/django-unfold/issues/1211) 
     # if issue fixed remove the custom css
     "STYLES": [

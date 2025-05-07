@@ -9,7 +9,10 @@ class Category(models.Model):
     
     class Meta:
         verbose_name_plural = "Categories"
-    
+        permissions = [
+            ("can_view_icon_category", "Can view icon category"),
+        ]
+
     def __str__(self):
         return self.name
 
@@ -22,6 +25,9 @@ class Product(models.Model):
 
     class Meta:
         ordering = ['name']
+        permissions = [
+            ("can_view_icon_product", "Can view icon product"),
+        ]
 
     def __str__(self):
         return f'{self.name}'

@@ -11,6 +11,11 @@ class Account(models.Model):
 
     def __str__(self):
         return f"Account {self.name}"
+    
+    class Meta:
+        permissions = [
+            ("can_view_icon_account", "Can view icon account"),
+        ]
 
 class Withdraw(models.Model):
     account = models.ForeignKey(Account, related_name='withdrawals', on_delete=models.CASCADE)
@@ -20,6 +25,11 @@ class Withdraw(models.Model):
 
     def __str__(self):
         return f"Withdraw {self.amount} from {self.account}"
+    
+    class Meta:
+        permissions = [
+            ("can_view_icon_withdraw", "Can view icon withdraw"),
+        ]
 
     def clean(self):
         if self.amount > self.account.balance:
@@ -41,6 +51,11 @@ class AccountTransfer(models.Model):
 
     def __str__(self):
         return f"Transfer {self.amount} from {self.from_account} to {self.to_account}"
+
+    class Meta:
+        permissions = [
+            ("can_view_icon_account_transfer", "Can view icon account transfer"),
+        ]
 
     def clean(self):
         if self.amount > self.from_account.balance:

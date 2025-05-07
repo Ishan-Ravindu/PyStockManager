@@ -12,3 +12,8 @@ class Receipt(models.Model):
 
     def __str__(self):
         return f"Receipt {self.id} for Sales {self.sales_invoice.id}"
+    
+    class Meta:
+        permissions = [
+            ("can_view_icon_receipt", "Can view icon receipt"),
+        ]

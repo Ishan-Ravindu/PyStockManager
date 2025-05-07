@@ -16,6 +16,11 @@ class StockTransfer(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+    
+    class Meta:
+        permissions = [
+            ("can_view_icon_stock_transfer", "Can view icon stock transfer"),
+        ]
 
 class StockTransferItem(models.Model):
     stock_transfer = models.ForeignKey(StockTransfer, on_delete=models.CASCADE)

@@ -17,3 +17,8 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment {self.id}"
+
+    class Meta:
+        permissions = [
+            ("can_view_icon_payment", "Can view icon payment"),
+        ]
