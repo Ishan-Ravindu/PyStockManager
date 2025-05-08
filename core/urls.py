@@ -15,4 +15,5 @@ urlpatterns = [
     path('api/expense/', include('expense.api.urls')),
     path('api/customer/', include('customer.api.urls')),
     path('api/shop/', include('shop.api.urls')),
+    path('api/payment/', include('payment.api.urls')),
 ]

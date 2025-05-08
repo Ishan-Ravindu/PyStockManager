@@ -1,0 +1,33 @@
+<div class="shop-info">
+    <div class="shop-name">All Shops Summary</div>
+    <div class="shop-inventory-value">Total Inventory Value: <span id="all-shops-inventory-value">Loading...</span></div>
+    <div class="shop-products-count">Total Products: <span id="all-shops-products-count">Loading...</span></div>
+</div>
+
+<div class="filters-container">
+    <input type="text" id="all-filter-product" class="filter-input" placeholder="Filter by product name...">
+    <input type="number" id="all-filter-min-qty" class="filter-input" placeholder="Min quantity">
+    <input type="number" id="all-filter-max-qty" class="filter-input" placeholder="Max quantity">
+    <input type="number" id="all-filter-min-value" class="filter-input" placeholder="Min inventory value">
+    <input type="number" id="all-filter-max-value" class="filter-input" placeholder="Max inventory value">
+</div>
+
+<table class="inventory-table" id="all-inventory-table">
+    <thead>
+        <tr>
+            <th data-sort="shop_name">Shop Name</th>
+            <th data-sort="product_id">Product ID</th>
+            <th data-sort="product_name">Product Name</th>
+            <th data-sort="quantity">Quantity</th>
+            <th data-sort="average_cost">Average Cost</th>
+            <th data-sort="selling_price">Selling Price</th>
+            <th data-sort="inventory_value">Inventory Value</th>
+        </tr>
+    </thead>
+    <tbody id="all-inventory-body">
+        <tr>
+            <td colspan="7" class="loading">Loading inventory data...</td>
+        </tr>
+    </tbody>
+</table>
+<div class="pagination" id="all-pagination"></div>

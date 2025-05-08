@@ -1,0 +1,10 @@
+<div class="tabs-container">
+    <div class="tabs" id="shop-tabs">
+        <div class="tab active" data-shop-id="all" onclick="Dashboard.switchTab('all')">All Shops</div>
+        <div class="tab" data-shop-id="loading" style="display: none;">Loading shops...</div>
+    </div>
+
+    <div id="content-all" class="tab-content active">
+        {% include "dashboard/_all_shops_content.html" %}
+    </div>
+</div>
