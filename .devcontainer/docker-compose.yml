@@ -7,9 +7,14 @@ services:
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ..:/workspace:cached
+      - node_modules:/workspace/node_modules
     command: sleep infinity
     depends_on:
       - db
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"  # For Node.js applications
 
   db:
     image: mariadb:10.11
@@ -26,3 +31,4 @@ services:
 
 volumes:
   mariadb-data:
+  node_modules:
