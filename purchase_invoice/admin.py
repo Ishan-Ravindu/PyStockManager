@@ -9,7 +9,7 @@ from utils import invoice_number
 class PurchaseInvoiceItemInline(TabularInline):
     model = PurchaseInvoiceItem
     autocomplete_fields = ['product']
-    extra = 0
+    extra = 5
 
 @admin.register(PurchaseInvoice)
 class PurchaseInvoiceAdmin(SimpleHistoryAdmin, ModelAdmin):

@@ -8,7 +8,7 @@ class SalesInvoiceItemInline(TabularInline):
     formset = SalesInvoiceItemFormSet
     exclude = ['average_cost']
     autocomplete_fields = ['product']
-    extra = 0
+    extra = 5
     
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
