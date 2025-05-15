@@ -45,13 +45,18 @@ const Dashboard = (function() {
         createInventoryRow: (item, includeShop = true) => {
             return `
                 <tr>
-                    ${includeShop ? `<td>${item.shop_name || ''}</td>` : ''}
-                    <td>${item.product_id}</td>
-                    <td>${item.product_name}</td>
-                    <td>${item.quantity}</td>
-                    <td>${utils.formatNumber(item.average_cost)}</td>
-                    <td>${utils.formatNumber(item.selling_price)}</td>
-                    <td>${utils.formatNumber(item.inventory_value)}</td>
+                ${includeShop ? `<td><a href="/admin/shop/shop/${item.shop_id}/change/">${item.shop_name || ''}</a></td>` : ''}
+                <td><a href="/admin/product/product/${item.product_id}/change/">${item.product_id}</a></td>
+                <td><a href="/admin/product/product/${item.product_id}/change/">${item.product_name}</a></td>
+                <td>${item.quantity}</td>
+                <td>${utils.formatNumber(item.average_cost)}</td>
+                <td>${utils.formatNumber(item.selling_price)}</td>
+                <td>${utils.formatNumber(item.inventory_value)}</td>
+                <td>
+                    <a href="/admin/inventory/stock/${item.id}/change/" class="edit-link">
+                        ⚙️ 
+                    </a>
+                </td>
                 </tr>
             `;
         },
@@ -105,7 +110,6 @@ const Dashboard = (function() {
                     try {
                         const inventoryRes = await fetch(`/api/inventory/inventory-value/?shop_id=${shop.id}`);
                         const inventoryData = await inventoryRes.json();
-                        
                         // Add shop inventory data
                         shop.total_inventory_value = inventoryData.total_inventory_value;
                         shop.total_products = inventoryData.products.length;

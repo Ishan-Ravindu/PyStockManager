@@ -27,13 +27,15 @@ class StockAdmin(SimpleHistoryAdmin, ModelAdmin, ImportExportModelAdmin):
         'product__name',
         'product__description',
     )
+    readonly_fields = ('shop', 'product' )
+    exclude = ('selling_price', )
     list_per_page = 20
     list_display_links = None  
     import_form_class = ImportForm
     export_form_class = ExportForm
 
     def has_change_permission(self, request, obj=None):
-        return False
+        return True
 
     def has_delete_permission(self, request, obj=None):
         return False

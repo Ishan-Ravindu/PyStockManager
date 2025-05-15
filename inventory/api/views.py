@@ -105,6 +105,7 @@ class InventoryValueAPI(APIView):
         product_values = []
         for stock in stocks:
             product_values.append({
+                'id': stock.id,
                 'product_id': stock.product_id,
                 'product_name': stock.product.name,
                 'quantity': stock.quantity,

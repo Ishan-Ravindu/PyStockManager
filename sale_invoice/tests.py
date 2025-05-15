@@ -65,7 +65,6 @@ class SalesInvoiceItemTestCase(TestCase):
             product=self.product1,
             quantity=100,
             average_cost=Decimal('10.00'),
-            selling_price=Decimal('15.00')
         )
         
         self.stock2 = Stock.objects.create(
@@ -628,7 +627,7 @@ class SalesInvoiceItemTestCase(TestCase):
             'product': self.product1.id,
             'quantity': 5,
             'price': Decimal('15.00'),  # Equal to selling price
-            'average_cost': Decimal('10.00'),
+            'average_cost': Decimal('10.10'),
             'discount_method': 'amount',
             'discount_amount': Decimal('0.00')
         }
@@ -637,7 +636,7 @@ class SalesInvoiceItemTestCase(TestCase):
         self.assertTrue(form.is_valid())
         
         # Test case 2: Price below selling price should be invalid
-        form_data['price'] = Decimal('14.00')  # Below selling price
+        form_data['price'] = Decimal('9.00')  # Below selling price
         form = SalesInvoiceItemForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn('price', form.errors)
@@ -663,7 +662,7 @@ class SalesInvoiceItemTestCase(TestCase):
             'sales_invoice': self.invoice.id,
             'product': self.product1.id,
             'quantity': 5,
-            'price': Decimal('14.00'),  # Below selling price
+            'price': Decimal('9.00'),  # Below selling price
             'average_cost': Decimal('10.00'),
             'discount_method': 'amount',
             'discount_amount': Decimal('0.00')

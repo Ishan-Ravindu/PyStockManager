@@ -16,7 +16,7 @@ class InventoryValueSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Stock
-        fields = ['product_id', 'product_name', 'quantity', 
+        fields = ['id', 'product_id', 'product_name', 'quantity', 
                  'average_cost', 'inventory_value']
     
     def get_inventory_value(self, obj):
