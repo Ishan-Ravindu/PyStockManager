@@ -13,7 +13,7 @@ DATABASES = {
         'NAME': "mssports",
         'USER': "mssports",
         'PASSWORD': "123Mssports123Mssports",
-        'HOST': "118.139.180.214",
+        'HOST': "184.168.112.74",
         'PORT': "3306",
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
