@@ -2,8 +2,10 @@ from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
 from unfold.admin import TabularInline
+from guardian.shortcuts import get_objects_for_user
 
 from purchase_invoice.models import PurchaseInvoice, PurchaseInvoiceItem
+from shop.models import Shop
 from utils import invoice_number
 
 class PurchaseInvoiceItemInline(TabularInline):
@@ -31,3 +33,10 @@ class PurchaseInvoiceAdmin(SimpleHistoryAdmin, ModelAdmin):
         if obj:
             return  ('supplier', 'shop',) + self.readonly_fields 
         return self.readonly_fields
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        allowed_shops = get_objects_for_user(request.user, 'shop.view_shop', Shop)
+        return qs.filter(shop__in=allowed_shops)

@@ -3,6 +3,7 @@ from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin
 from django.core.exceptions import ValidationError
 from django import forms
+from guardian.admin import GuardedModelAdmin
 
 from shop.models import Shop
 
@@ -18,7 +19,7 @@ class ShopAdminForm(forms.ModelForm):
         return code
 
 @admin.register(Shop)
-class ShopAdmin(SimpleHistoryAdmin, ModelAdmin):
+class ShopAdmin(SimpleHistoryAdmin, ModelAdmin, GuardedModelAdmin):
     form = ShopAdminForm
     list_display = ('name', 'code', 'location', 'is_warehouse')
     list_filter = ('is_warehouse',)

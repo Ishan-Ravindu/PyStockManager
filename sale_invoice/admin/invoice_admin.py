@@ -6,9 +6,11 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.shortcuts import redirect
+from guardian.shortcuts import get_objects_for_user
 
 from sale_invoice.admin.payment_status_filter import PaymentStatusFilter
 from sale_invoice.models import SalesInvoice, SalesInvoiceItem
+from shop.models import Shop
 from utils import invoice_number
 from .forms import SalesInvoiceForm
 from .inlines import SalesInvoiceItemInline
@@ -118,3 +120,16 @@ class SalesInvoiceAdmin(SimpleHistoryAdmin, PDFViewMixin, MessageMixin, ModelAdm
     def view_invoice_pdf(self, obj):
         return self.get_pdf_button(obj, 'generate_invoice_pdf')
     view_invoice_pdf.short_description = 'Invoice PDF'
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        allowed_shops = get_objects_for_user(request.user, 'shop.view_shop', Shop)
+        return qs.filter(shop__in=allowed_shops)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'shop' and not request.user.is_superuser:
+            allowed_shops = get_objects_for_user(request.user, 'shop.view_shop', Shop)
+            kwargs['queryset'] = allowed_shops
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
