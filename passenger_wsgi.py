@@ -2,7 +2,7 @@ import os
 import sys
 
 # Step 1: Set project and virtualenv paths
-project_path = '/home/j9bqcm7s1zfp/mssports'
+project_path = '/home/j9bqcm7s1zfp/example'
 if project_path not in sys.path:
     sys.path.insert(0, project_path)
 

@@ -5,15 +5,17 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'fallback-key-should-be-replace
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['mssports.lk', 'www.mssports.lk']
+# user proper env to handle this
+
+ALLOWED_HOSTS = ['example.lk', 'www.example.lk']
 
 DATABASES = {
     'default': {
         'ENGINE': "django.db.backends.mysql",
-        'NAME': "mssports",
-        'USER': "mssports",
-        'PASSWORD': "123Mssports123Mssports",
-        'HOST': "184.168.112.74",
+        'NAME': "example",
+        'USER': "example",
+        'PASSWORD': "example",
+        'HOST': "xxx.xxx.xxx.xxx",
         'PORT': "3306",
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
@@ -22,6 +24,6 @@ DATABASES = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://mssports.lk",
-    "https://www.mssports.lk",
+    "https://example.lk",
+    "https://www.example.lk",
 ]
